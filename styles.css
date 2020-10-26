@@ -1,0 +1,30 @@
+#workspace {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.btn-group {
+  margin-bottom: 2rem;
+}
+
+.box {
+  height: 400px;
+  width: 400px;
+  background: black;
+  margin-bottom: 2rem;
+}
+
+.child {
+  display: inline-block;
+  margin: 0 0.5rem 0.5rem 0;
+  height: 100px;
+  width: 100px;
+  background: red;
+  transition: transform 1s linear;
+  transform: translate(100px, 100px);
+}
+
+.bring-in {
+  transform: translate(0, 0);
+}
