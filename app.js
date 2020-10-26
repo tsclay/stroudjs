@@ -9,7 +9,7 @@ const addChildGracefully = () => {
 
   const handleExit = (e) => {
     const thisChild = e.currentTarget
-    transition('out', thisChild, 'bring-in')
+    transition('out', thisChild, 'bring-out')
   }
 
   childDiv.addEventListener('click', handleExit)

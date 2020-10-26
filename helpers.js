@@ -304,12 +304,12 @@ const transition = (direction, node, transitionClass, parent, observerArgs) => {
   //   e.target.removeEventListener('transitionend', fullyOut, true)
   // }
 
-  const createObserver = (target, options, callback) => {
-    const observer = new IntersectionObserver(callback, options)
-    observer.observe(target)
-    transitionObservers.add(target)
-    return observer
-  }
+  // const createObserver = (target, options, callback) => {
+  //   const observer = new IntersectionObserver(callback, options)
+  //   observer.observe(target)
+  //   transitionObservers.add(target)
+  //   return observer
+  // }
   // console.log('reg observers before if block', transitionObservers)
 
   /**
@@ -346,8 +346,10 @@ const transition = (direction, node, transitionClass, parent, observerArgs) => {
    * @param {String} t - The class name that references the entrance transition used for this node
    */
   const transitionOut = (n, t) => {
-    // n.addEventListener('transitionend', fullyOut, true)
-    n.classList.remove(t)
+    n.classList.add(t)
+    n.ontransitionend = () => {
+      n.remove()
+    }
   }
 
   let output = null
@@ -361,44 +363,44 @@ const transition = (direction, node, transitionClass, parent, observerArgs) => {
     )
   }
 
-  if (!transitionObservers.has(node)) {
-    let options
-    let callback
-    if (observerArgs) {
-      options = observerArgs.options
-      callback = observerArgs.callback
-    }
-    const o = options || {
-      root: null,
-      threshold: [0, 1]
-    }
-    const c =
-      callback ||
-      ((mutations, observer) => {
-        const nodeClasses = new Set(node.classList)
-        mutations.forEach((m) => {
-          if (
-            !nodeClasses.has(transitionClass) &&
-            (m.boundingClientRect.height === 0 ||
-              m.boundingClientRect.width === 0)
-          ) {
-            node.remove()
-            transitionObservers.delete(node)
-            console.log('scaled to 0', transitionObservers)
-          } else if (
-            !nodeClasses.has(transitionClass) &&
-            m.intersectionRatio === 0
-          ) {
-            node.remove()
-            transitionObservers.delete(node)
-            console.log('off the screen', transitionObservers)
-          }
-        })
-      })
-    createObserver(node, o, c)
-  } else {
-    console.log('already there', transitionObservers)
-  }
+  // if (!transitionObservers.has(node)) {
+  //   let options
+  //   let callback
+  //   if (observerArgs) {
+  //     options = observerArgs.options
+  //     callback = observerArgs.callback
+  //   }
+  //   const o = options || {
+  //     root: null,
+  //     threshold: [0, 1]
+  //   }
+  //   const c =
+  //     callback ||
+  //     ((mutations, observer) => {
+  //       const nodeClasses = new Set(node.classList)
+  //       mutations.forEach((m) => {
+  //         if (
+  //           !nodeClasses.has(transitionClass) &&
+  //           (m.boundingClientRect.height === 0 ||
+  //             m.boundingClientRect.width === 0)
+  //         ) {
+  //           node.remove()
+  //           transitionObservers.delete(node)
+  //           console.log('scaled to 0', transitionObservers)
+  //         } else if (
+  //           !nodeClasses.has(transitionClass) &&
+  //           m.intersectionRatio === 0
+  //         ) {
+  //           node.remove()
+  //           transitionObservers.delete(node)
+  //           console.log('off the screen', transitionObservers)
+  //         }
+  //       })
+  //     })
+  //   createObserver(node, o, c)
+  // } else {
+  //   console.log('already there', transitionObservers)
+  // }
 
   if (direction.toLowerCase() === 'in' && parent) {
     transitionIn(node, transitionClass, parent)
