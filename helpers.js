@@ -296,22 +296,7 @@ const transitionObservers = new Set()
  * @param {callback} observerArgs.callback - The callback function to execute when the IntersectionObserver detects changes
  */
 const transition = (direction, node, transitionClass, parent, observerArgs) => {
-  // const fullyOut = (e) => {
-  //   const { width, height } = e.target.getBoundingClientRect()
-  //   if (width === 0 && height === 0) {
-  //     e.target.remove()
-  //   }
-  //   e.target.removeEventListener('transitionend', fullyOut, true)
-  // }
-
-  // const createObserver = (target, options, callback) => {
-  //   const observer = new IntersectionObserver(callback, options)
-  //   observer.observe(target)
-  //   transitionObservers.add(target)
-  //   return observer
-  // }
-  // console.log('reg observers before if block', transitionObservers)
-
+ 
   /**
    * Append an element to a parent container, attach a class name for its entrance transition, and trigger it to execute by calculating its ```offsetWidth```.
    *
@@ -323,10 +308,9 @@ const transition = (direction, node, transitionClass, parent, observerArgs) => {
    * @param {String} t - The class name that references the entrance transition
    * @param {HTMLElement} p - The parent node to which the node is appended
    */
-  const transitionIn = (n, t, p) => {
-    // n.addEventListener('transitionend', fullyOut, true)
+  const enter = (n, t, p) => {
     if (p.lastChild === n) {
-      n.offsetWidth = n.offsetWidth
+      n.offsetWidtetWidthh = n.offsetWidth
       n.classList.add(t)
       return
     }
@@ -345,7 +329,7 @@ const transition = (direction, node, transitionClass, parent, observerArgs) => {
    * @param {HTMLElement} n - The node needing the transition class removed
    * @param {String} t - The class name that references the entrance transition used for this node
    */
-  const transitionOut = (n, t) => {
+  const exit = (n, t) => {
     n.classList.add(t)
     n.ontransitionend = () => {
       n.remove()
@@ -363,51 +347,13 @@ const transition = (direction, node, transitionClass, parent, observerArgs) => {
     )
   }
 
-  // if (!transitionObservers.has(node)) {
-  //   let options
-  //   let callback
-  //   if (observerArgs) {
-  //     options = observerArgs.options
-  //     callback = observerArgs.callback
-  //   }
-  //   const o = options || {
-  //     root: null,
-  //     threshold: [0, 1]
-  //   }
-  //   const c =
-  //     callback ||
-  //     ((mutations, observer) => {
-  //       const nodeClasses = new Set(node.classList)
-  //       mutations.forEach((m) => {
-  //         if (
-  //           !nodeClasses.has(transitionClass) &&
-  //           (m.boundingClientRect.height === 0 ||
-  //             m.boundingClientRect.width === 0)
-  //         ) {
-  //           node.remove()
-  //           transitionObservers.delete(node)
-  //           console.log('scaled to 0', transitionObservers)
-  //         } else if (
-  //           !nodeClasses.has(transitionClass) &&
-  //           m.intersectionRatio === 0
-  //         ) {
-  //           node.remove()
-  //           transitionObservers.delete(node)
-  //           console.log('off the screen', transitionObservers)
-  //         }
-  //       })
-  //     })
-  //   createObserver(node, o, c)
-  // } else {
-  //   console.log('already there', transitionObservers)
-  // }
-
+  
   if (direction.toLowerCase() === 'in' && parent) {
-    transitionIn(node, transitionClass, parent)
+    enter(node, transitionClass, parent)
     output = 'in'
     return output
   }
-  transitionOut(node, transitionClass)
+  exit(node, transitionClass)
   output = 'out'
   return output
 }
