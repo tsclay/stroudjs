@@ -11,22 +11,24 @@ const addChildGracefully = () => {
     'Click me to go out!'
   )
 
+  childDiv.style.background = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`
+
   const handleExit = (e) => {
     const thisChild = e.currentTarget
     const text = thisChild.textContent
-    transition(thisChild, {
-      duration: 800,
+    transition('out',thisChild, {
+      duration: 2000,
       delay: 0,
       easing: linear,
-      css: (t, u) => '',
+      css: (t, u) => {
+          return`
+          transform: translate(${t * 100}px, ${t * 100}px);
+          opacity: ${u};
+        `
+      },
       tick: (t, u) => {
         if (t === 1) {
           thisChild.remove()
-        } else {
-          thisChild.textContent = text.slice(
-            0,
-            Math.round(text.length * (1 - t))
-          )
         }
       }
     })
@@ -35,7 +37,7 @@ const addChildGracefully = () => {
   childDiv.addEventListener('click', handleExit)
 
   searchForOne('.box').appendChild(childDiv)
-  transition(childDiv, {
+  transition('in', childDiv, {
     duration: 300,
     delay: 0,
     easing: linear,

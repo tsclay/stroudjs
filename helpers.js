@@ -172,6 +172,18 @@ const empty = (parent, callback) => {
   if (typeof callback === 'function') callback()
 }
 
+//===========================================================
+// Utilities
+//===========================================================
+ // https://github.com/darkskyapp/string-hash/blob/master/index.js
+ const hash = (str) => {
+	let hash = 5381;
+	let i = str.length;
+
+	while (i--) hash = ((hash << 5) - hash) ^ str.charCodeAt(i);
+	return hash >>> 0;
+}
+
 //= ==========================================================
 // CSS Transition & Animation
 //= ==========================================================
@@ -183,42 +195,9 @@ const empty = (parent, callback) => {
 const style = document.createElement('style')
 document.head.appendChild(style)
 
-const registeredRules = new Set()
-
-const linear = (x) => x
-/**
- * Transition an element in or out of the DOM gracefully.
- *
- * @param {HTMLElement} node - The node needing to transition
- * @param {HTMLElement} [parent] - (Optional) The parent to which node would be appended if ```direction = 'in'```
- */
-// const transition = (node, parent) => {
-//   const duration = 1000
-//   const keyframes = Math.ceil(duration / 16.66)
-
-//   const rules = `
-//     @keyframes linear {
-//       ${Array(keyframes)
-//         .fill(null)
-//         .map((_, index) => {
-//           const t = index / keyframes
-//           const eased_t = easing(t)
-//           return `${t * 100}% { transform: translateY(${
-//             (1 - eased_t) * 50
-//           }px);}`
-//         })
-//         .join('\n')}
-//       100% { transform: translateY(0px); }
-//     }
-//   `
-
-//   style.sheet.insertRule(rules)
-//   node.style.animation = 'linear 0.2s linear 0ms 1 both'
-//   parent.appendChild(node)
-// }
-
 let i = 0
 const transition = (
+  flag,
   node,
   params = {
     duration: 300,
@@ -229,7 +208,7 @@ const transition = (
   }
 ) => {
   const { duration, delay, easing, css, tick } = params
-  const name = `linear${i++}`
+  const name = `stroud_${hash(`${i++}`)}`
   const keyframes = Math.ceil(duration / 16.66)
 
   const rules = `
@@ -246,8 +225,47 @@ const transition = (
   }
   `
 
-  style.sheet.insertRule(rules)
+  style.sheet.insertRule(rules, style.sheet.length)
+ 
   node.style.animation = `${name} ${duration}ms linear ${delay}ms 1 both`
+
+  // node.onanimationend = () => {
+  //   node.style.animation = ''
+  // }
+
+  let prev = node
+  let next = node.nextElementSibling ? node.nextElementSibling : null
+  const shift_siblings = []
+  while (next) {
+    const prevRect = prev.getBoundingClientRect()
+    const nextRect = next.getBoundingClientRect()
+    const leftDiff = prevRect.left - nextRect.left
+    const topDiff = prevRect.top - nextRect.top
+    console.log(leftDiff, topDiff);
+
+    shift_siblings.push({next, leftDiff, topDiff})
+    prev = next
+    next = next.nextElementSibling
+  }
+
+  shift_siblings.forEach((s, i) => {
+    const {next, leftDiff, topDiff} = s
+    transition('in', next, {
+      delay, 
+      easing, 
+      duration,
+      css: (t, u) => {
+        return `transform: translate(${t * leftDiff}px, ${t * topDiff}px);`
+      },
+      tick: (t, u) => {
+        if (t === 1) {
+          next.style.animation = ''
+        }
+      }
+    })
+    shift_siblings.splice(i, 1)
+  })
+
 
   // JS transition
   const start = Date.now()
