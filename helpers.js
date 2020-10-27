@@ -176,123 +176,96 @@ const empty = (parent, callback) => {
 // CSS Transition & Animation
 //= ==========================================================
 
-/**
- * Move one element from one parent to another using an animation to show
- * the action.
- *
- * @param {HTMLElement} node - The node to animate. This only affects the node's insertion into the DOM.
- * @param {Object} props - Other CSS props to animate; translate is handled, but can add extra translates if needed
- * @param {Object} classOptions - The class name and whether to add or remove it
- * @param {HTMLElement} parent - The parent to which the animated node will be appended
- */
-// const animateTo = (node, props, classOptions, parent) => {
-//   const style = getComputedStyle(node)
-//   console.log(style.transform)
-//   const transform = style.transform === '' ? 'none' : style.transform
-//   const from = node.getBoundingClientRect()
-//   const to = parent.getBoundingClientRect()
-//   let correctiveX = 0
-//   let correctiveY = 0
-//   if (parent.lastElementChild && classOptions.change === 'add') {
-//     const lastChild = parent.lastElementChild.getBoundingClientRect()
-//     correctiveX = lastChild.left + lastChild.width
-//   }
-//   if (parent.lastElementChild && classOptions.change === 'remove') {
-//     const lastChild = parent.lastElementChild.getBoundingClientRect()
-//     correctiveY = 50 * parent.children.length - 1
-//   }
-
-//   const player = node.animate(
-//     [
-//       {
-//         transform: `${transform} translate(${-1.0 * dx + correctiveX}px,${
-//           -1.0 * dy + correctiveY
-//         }px)`,
-//         ...props
-//       }
-//     ],
-//     {
-//       duration: 200,
-//       easing: 'linear',
-//       composite: 'replace'
-//     }
-//   )
-
-//   const swapParents = (e) => {
-//     parent.appendChild(node)
-//     if (classOptions.change === 'add') {
-//       node.classList.add(classOptions.className)
-//       node.style.transform = `translate(${correctiveX}px, 0px)`
-//     } else if (classOptions.change === 'remove') {
-//       node.classList.remove(classOptions.className)
-//       node.style.transform = ''
-//       node.style.overflow = 'visible'
-//       node.style.transform = `translate(-3.37px, ${
-//         50 * (parent.children.length - 1)
-//       }px)`
-//     }
-//     console.log('all done')
-//     player.removeEventListener('finish', swapParents, true)
-//   }
-
-//   player.addEventListener('finish', swapParents, true)
-// }
-
-/**
- * Using an animation defined in CSS, give a node a cool entrance.
- * Animation must be defined using ```@keyframes```
- *
- * @param {HTMLElement} node - The node to animate. This only affects the node's insertion into the DOM.
- * @param {String} animator - The class name that references the ```@keyframe``` animation (i.e. a fade-in or slide-in animation)
- * @param {HTMLElement} parent - The parent to which the animated node will be appended
- */
-const animateIn = (node, animator, parent) => {
-  const removeAnimator = () => {
-    node.classList.remove(animator)
-    node.removeEventListener('animationend', removeAnimator)
-  }
-  node.addEventListener('animationend', removeAnimator)
-  node.classList.add(animator)
-  parent.appendChild(node)
-}
-
-/**
- * Using an animation defined in CSS, give a node a grand exit.
- * Animation must be defined using ```@keyframes```
- *
- * Note that this function will use ```node.remove()``` instead of ```someParent.removeChild(node)```
- *
- * @param {HTMLElement} node - The node to animate. This only affects the node's removal from the DOM.
- * @param {String} animator - The class name that references the ```@keyframe``` animation (i.e. a custom fade-out or slide-out animation)
- */
-const animateOut = (node, animator) => {
-  const removeAnimator = () => {
-    node.remove()
-    node.classList.remove(animator)
-    node.removeEventListener('animationend', removeAnimator)
-  }
-  node.classList.add(animator)
-  node.addEventListener('animationend', removeAnimator)
-}
-
 //= ==========================================================
 // Transition
 //= ==========================================================
+
+const style = document.createElement('style')
+document.head.appendChild(style)
+
+const registeredRules = new Set()
+
+const linear = (x) => x
 /**
  * Transition an element in or out of the DOM gracefully.
  *
  * @param {HTMLElement} node - The node needing to transition
  * @param {HTMLElement} [parent] - (Optional) The parent to which node would be appended if ```direction = 'in'```
  */
-const transition = (node, parent, params) => {
-  const style = getComputedStyle(node);
-	const target_opacity = +style.opacity;
-  const transform = style.transform === 'none' ? '' : style.transform;
-  
-  return {
-		delay,
-		duration,
-		easing,
-		css: t => `opacity: ${t * o}`
-	};
+// const transition = (node, parent) => {
+//   const duration = 1000
+//   const keyframes = Math.ceil(duration / 16.66)
+
+//   const rules = `
+//     @keyframes linear {
+//       ${Array(keyframes)
+//         .fill(null)
+//         .map((_, index) => {
+//           const t = index / keyframes
+//           const eased_t = easing(t)
+//           return `${t * 100}% { transform: translateY(${
+//             (1 - eased_t) * 50
+//           }px);}`
+//         })
+//         .join('\n')}
+//       100% { transform: translateY(0px); }
+//     }
+//   `
+
+//   style.sheet.insertRule(rules)
+//   node.style.animation = 'linear 0.2s linear 0ms 1 both'
+//   parent.appendChild(node)
+// }
+
+let i = 0
+const transition = (
+  node,
+  params = {
+    duration: 300,
+    delay: 0,
+    easing: linear,
+    css: (t, u) => `transform: translate(-${t * 50}px, ${t * 50}px)`,
+    tick: (t, u) => ''
+  }
+) => {
+  const { duration, delay, easing, css, tick } = params
+  const name = `linear${i++}`
+  const keyframes = Math.ceil(duration / 16.66)
+
+  const rules = `
+  @keyframes ${name} {
+    ${Array(keyframes)
+      .fill(null)
+      .map((_, index) => {
+        const t = index / keyframes
+        const eased_t = easing(t)
+        return `${t * 100}% { ${css(eased_t, 1 - eased_t)} }`
+      })
+      .join('\n')}
+    100% { ${css(1, 0)} }
+  }
+  `
+
+  style.sheet.insertRule(rules)
+  node.style.animation = `${name} ${duration}ms linear ${delay}ms 1 both`
+
+  // JS transition
+  const start = Date.now()
+  const end = start + duration
+  tick(0, 1)
+
+  const loop = () => {
+    const now = Date.now()
+    if (now > end) {
+      tick(1, 0)
+      return
+    }
+
+    const t = (now - start) / duration
+    const eased_t = t
+
+    tick(eased_t, 1 - eased_t)
+    requestAnimationFrame(loop)
+  }
+  requestAnimationFrame(loop)
 }
