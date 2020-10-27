@@ -281,70 +281,18 @@ const animateOut = (node, animator) => {
 /**
  * Transition an element in or out of the DOM gracefully.
  *
- * @param {String} direction - Pass ```in``` or ```out```
  * @param {HTMLElement} node - The node needing to transition
- * @param {String} transitionClass - The class name to toggle
  * @param {HTMLElement} [parent] - (Optional) The parent to which node would be appended if ```direction = 'in'```
  */
-const transition = (direction, node, transitionClass, parent) => {
- 
-  /**
-   * Append an element to a parent container, attach a class name for its entrance transition, and trigger it to execute by calculating its ```offsetWidth```.
-   *
-   * If needing to remove the node afterwards, use ```transitionOut()```
-   *
-   * When paired with ```transitionOut```,
-   *
-   * @param {HTMLElement} n - The node needing the transition class
-   * @param {String} t - The class name that references the entrance transition
-   * @param {HTMLElement} p - The parent node to which the node is appended
-   */
-  const enter = (n, t, p) => {
-    if (p.lastChild === n) {
-      n.offsetWidth = n.offsetWidth
-      n.classList.add(t)
-      return
-    }
-    p.appendChild(n)
-    n.offsetWidth = n.offsetWidth
-    n.classList.add(t)
-  }
-
-  /**
-   * Remove transition class from element to trigger it to return to the state it was when it first entered the DOM.
-   *
-   * The node is removed from the DOM when its transition end. A callback then cleans up the event listener, avoiding memory leaks.
-   *
-   * It is best to use this in conjunction with ```transitionIn()```
-   *
-   * @param {HTMLElement} n - The node needing the transition class removed
-   * @param {String} t - The class name that references the entrance transition used for this node
-   */
-  const exit = (n, t) => {
-    n.classList.add(t)
-    n.ontransitionend = () => {
-      n.remove()
-    }
-  }
-
-  let output = null
-  if (!direction)
-    return new Error(
-      'direction missing, not a string, or not eqaual to "in" or "out"'
-    )
-  if (direction.toLowerCase() === 'in' && !parent) {
-    return new Error(
-      'parent node must be included when transitioning an element in'
-    )
-  }
-
+const transition = (node, parent, params) => {
+  const style = getComputedStyle(node);
+	const target_opacity = +style.opacity;
+  const transform = style.transform === 'none' ? '' : style.transform;
   
-  if (direction.toLowerCase() === 'in' && parent) {
-    enter(node, transitionClass, parent)
-    output = 'in'
-    return output
-  }
-  exit(node, transitionClass)
-  output = 'out'
-  return output
+  return {
+		delay,
+		duration,
+		easing,
+		css: t => `opacity: ${t * o}`
+	};
 }

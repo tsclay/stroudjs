@@ -21,10 +21,10 @@
   height: 100px;
   width: 100px;
   background: red;
-  transition: all 1s linear;
-  transform: translate(100px, 100px);
+  /* transition: all 1s linear;
+  transform: translate(100px, 100px); */
 }
-
+/* 
 .bring-in {
   transform: translate(0, 0);
 }
@@ -32,4 +32,4 @@
 .bring-out {
   transform: translate(100px, 100px);
   opacity: 0;
-}
+} */
