@@ -278,24 +278,15 @@ const animateOut = (node, animator) => {
 //= ==========================================================
 // Transition
 //= ==========================================================
-const transitionObservers = new Set()
 /**
- * Transition an element in or out of the DOM gracefully. The method will register an IntersectionObserver instance that listens to the element's changes and record its intersection with the ```document``` (can be changed if desired)
- *
- * Check out https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API for more info
+ * Transition an element in or out of the DOM gracefully.
  *
  * @param {String} direction - Pass ```in``` or ```out```
  * @param {HTMLElement} node - The node needing to transition
  * @param {String} transitionClass - The class name to toggle
  * @param {HTMLElement} [parent] - (Optional) The parent to which node would be appended if ```direction = 'in'```
- * @param {Object} [observerArgs] - (Optional) Object containing the arguments to pass to ```IntersectionObserver``` instance
- * @param {Object} observerArgs.options - The options object to pass to IntersectionObserver
- * @param {Object} observerArgs.options.root - The element that is used as the viewport for checking visibility of the target. Must be the ancestor of the target. Defaults to the browser viewport if not specified or if null.
- * @param {Object} observerArgs.options.rootMargin - Margin around the root. Can have values similar to the CSS margin property, e.g. "10px 20px 30px 40px" (top, right, bottom, left). The values can be percentages. This set of values serves to grow or shrink each side of the root element's bounding box before computing intersections. Defaults to all zeros.
- * @param {Object} observerArgs.options.threshold - Either a single number or an array of numbers which indicate at what percentage of the target's visibility the observer's callback should be executed. If you only want to detect when visibility passes the 50% mark, you can use a value of 0.5. If you want the callback to run every time visibility passes another 25%, you would specify the array [0, 0.25, 0.5, 0.75, 1]. The default is 0 (meaning as soon as even one pixel is visible, the callback will be run). A value of 1.0 means that the threshold isn't considered passed until every pixel is visible.
- * @param {callback} observerArgs.callback - The callback function to execute when the IntersectionObserver detects changes
  */
-const transition = (direction, node, transitionClass, parent, observerArgs) => {
+const transition = (direction, node, transitionClass, parent) => {
  
   /**
    * Append an element to a parent container, attach a class name for its entrance transition, and trigger it to execute by calculating its ```offsetWidth```.
@@ -310,7 +301,7 @@ const transition = (direction, node, transitionClass, parent, observerArgs) => {
    */
   const enter = (n, t, p) => {
     if (p.lastChild === n) {
-      n.offsetWidtetWidthh = n.offsetWidth
+      n.offsetWidth = n.offsetWidth
       n.classList.add(t)
       return
     }
