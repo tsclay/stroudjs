@@ -195,6 +195,34 @@ const empty = (parent, callback) => {
 const style = document.createElement('style')
 document.head.appendChild(style)
 
+const registeredRules = new Set()
+
+// const fix_position = (node) => {
+// 	const style = getComputedStyle(node);
+
+// 	if (style.position !== 'absolute' && style.position !== 'fixed') {
+// 		const { width, height } = style;
+// 		const a = node.getBoundingClientRect();
+// 		node.style.position = 'absolute';
+// 		node.style.width = width;
+// 		node.style.height = height;
+// 		add_transform(node, a);
+// 	}
+// }
+
+// const add_transform = (node, a) => {
+//   const b = node.getBoundingClientRect();
+//   console.log('static', a);
+//   console.log('absolute', b);
+
+// 	if (a.left !== b.left || a.top !== b.top) {
+// 		const style = getComputedStyle(node);
+// 		const transform = style.transform === 'none' ? '' : style.transform;
+
+// 		node.style.transform = `${transform} translate(${a.left - b.left}px, ${a.top - b.top}px)`;
+// 	}
+// }
+
 let i = 0
 const transition = (
   flag,
@@ -204,7 +232,7 @@ const transition = (
     delay: 0,
     easing: linear,
     css: (t, u) => `transform: translate(-${t * 50}px, ${t * 50}px)`,
-    tick: (t, u) => ''
+    tick: (t, u) => t === 1 ? node.style.animation = '' : ''
   }
 ) => {
   const { duration, delay, easing, css, tick } = params
@@ -225,13 +253,10 @@ const transition = (
   }
   `
 
-  style.sheet.insertRule(rules, style.sheet.length)
- 
+  style.sheet.insertRule(rules, style.sheet.cssRules.length)
+  registeredRules.add(name)
+    
   node.style.animation = `${name} ${duration}ms linear ${delay}ms 1 both`
-
-  // node.onanimationend = () => {
-  //   node.style.animation = ''
-  // }
 
   let prev = node
   let next = node.nextElementSibling ? node.nextElementSibling : null
@@ -242,6 +267,8 @@ const transition = (
     const leftDiff = prevRect.left - nextRect.left
     const topDiff = prevRect.top - nextRect.top
     console.log(leftDiff, topDiff);
+
+    // fix_position(next)
 
     shift_siblings.push({next, leftDiff, topDiff})
     prev = next
@@ -255,18 +282,25 @@ const transition = (
       easing, 
       duration,
       css: (t, u) => {
-        return `transform: translate(${t * leftDiff}px, ${t * topDiff}px);`
+        return `
+        transform: translate(${t * leftDiff}px, ${t * topDiff}px);
+        `
       },
       tick: (t, u) => {
-        if (t === 1) {
-          next.style.animation = ''
-        }
+        // if (t === 1) {
+        //   next.style.animation = ''
+        // }
       }
     })
     shift_siblings.splice(i, 1)
   })
 
-
+ node.onanimationend = () => {
+    node.style.animation = ''
+    style.sheet.removeRule([...registeredRules].indexOf(name))
+    registeredRules.delete(name)
+}
+ 
   // JS transition
   const start = Date.now()
   const end = start + duration

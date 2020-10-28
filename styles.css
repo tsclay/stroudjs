@@ -17,8 +17,7 @@
 
 .child {
   display: inline-block;
-  flex: 1 0 calc(25% - 10px);
-  margin: 0 0.5rem 0.5rem 0;
+  /* margin: 0 0.5rem 0.5rem 0; */
   height: 100px;
   width: 100px;
   background: red;

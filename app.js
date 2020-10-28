@@ -16,7 +16,7 @@ const addChildGracefully = () => {
   const handleExit = (e) => {
     const thisChild = e.currentTarget
     const text = thisChild.textContent
-    transition('out',thisChild, {
+    transition('out', thisChild, {
       duration: 2000,
       delay: 0,
       easing: linear,
@@ -27,9 +27,9 @@ const addChildGracefully = () => {
         `
       },
       tick: (t, u) => {
-        if (t === 1) {
-          thisChild.remove()
-        }
+        // if (t === 1) {
+        //   thisChild.remove()
+        // }
       }
     })
   }
@@ -52,6 +52,10 @@ const resetChildren = () => {
   removeNodes(searchForAll('.child'), () => {
     console.log('All children cleared!')
   })
+  while (style.sheet.cssRules.length > 0) {
+    style.sheet.deleteRule(style.sheet.length-1)
+  }
+  registeredRules.clear()
 }
 
 resetBtn.addEventListener('click', resetChildren)
