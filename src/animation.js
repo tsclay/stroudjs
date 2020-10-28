@@ -4,6 +4,7 @@
 //= ==========================================================
 // Utilities
 //= ==========================================================
+
 // https://github.com/darkskyapp/string-hash/blob/master/index.js
 const hash = (str) => {
   let hash = 5381
@@ -21,8 +22,8 @@ const hash = (str) => {
 // Transition
 //= ==========================================================
 
-const style = document.createElement('style')
-document.head.appendChild(style)
+const active = document.createElement('style')
+document.head.appendChild(active)
 
 const registeredRules = new Set()
 
@@ -40,10 +41,21 @@ const fix_position = (node) => {
   }
 }
 
+// const add_transform = (node, a) => {
+//   const b = node.getBoundingClientRect()
+
+//   if (a.left !== b.left || a.top !== b.top) {
+//     const style = getComputedStyle(node)
+//     const transform = style.transform === 'none' ? '' : style.transform
+
+//     node.style.transform = `${transform} translate(${a.left - b.left}px, ${
+//       a.top - b.top
+//     }px)`
+//   }
+// }
+
 const add_transform = (node, a) => {
   const b = node.getBoundingClientRect()
-  console.log('static', a)
-  console.log('absolute', b)
 
   if (a.left !== b.left || a.top !== b.top) {
     const style = getComputedStyle(node)
@@ -85,6 +97,8 @@ const transition = (
   const { duration, delay, easing, css, tick } = params
   const name = `stroud_${hash(`${(i += 1)}`)}`
   const keyframes = Math.ceil(duration / 16.66)
+  const style = getComputedStyle(node)
+  const transform = style.transform === 'none' ? '' : style.transform
 
   const rules = `
   @keyframes ${name} {
@@ -93,14 +107,14 @@ const transition = (
       .map((_, index) => {
         const t = index / keyframes
         const eased_t = easing(t)
-        return `${t * 100}% { ${css(eased_t, 1 - eased_t)} }`
+        return `${t * 100}% { ${transform} ${css(eased_t, 1 - eased_t)} }`
       })
       .join('\n')}
     100% { ${css(1, 0)} }
   }
   `
 
-  style.sheet.insertRule(rules, style.sheet.cssRules.length)
+  active.sheet.insertRule(rules, active.sheet.cssRules.length)
   registeredRules.add(name)
 
   node.style.animation = `${name} ${duration}ms linear ${delay}ms 1 both`
@@ -108,11 +122,33 @@ const transition = (
   node.onanimationend = () => {
     node.style.animation = ''
     console.log('animate end!')
-    style.sheet.removeRule([...registeredRules].indexOf(name))
+    active.sheet.removeRule([...registeredRules].indexOf(name))
     registeredRules.delete(name)
   }
 
-  // JS transition
+  /*
+    Capture rect of exiting element
+    Set absolute position on exiting element
+    Set nextElementSibling's translate to +rect.left and +rect.top
+    Activate exiting element's transition out
+    Activate nextElementSibling slide over
+  */
+
+  let next = node.nextElementSibling ? node.nextElementSibling : null
+  const stack = []
+  while (next) {
+    stack.push(next)
+    next = next.nextElementSibling
+  }
+
+  for (let j = stack.length - 1; j >= 0; j -= 1) {
+    const currentRect = stack[j].getBoundingClientRect()
+    stack[j].style.position = 'absolute'
+    stack[j].style.top = `${currentRect.top + window.scrollY}px`
+    stack[j].style.left = `${currentRect.left + window.scrollX}px`
+  }
+
+  // JS transition if any
   const start = Date.now()
   const end = start + duration
   tick(0, 1)
