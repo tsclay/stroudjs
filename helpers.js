@@ -172,16 +172,16 @@ const empty = (parent, callback) => {
   if (typeof callback === 'function') callback()
 }
 
-//===========================================================
+//= ==========================================================
 // Utilities
-//===========================================================
- // https://github.com/darkskyapp/string-hash/blob/master/index.js
- const hash = (str) => {
-	let hash = 5381;
-	let i = str.length;
+//= ==========================================================
+// https://github.com/darkskyapp/string-hash/blob/master/index.js
+const hash = (str) => {
+  let hash = 5381
+  let i = str.length
 
-	while (i--) hash = ((hash << 5) - hash) ^ str.charCodeAt(i);
-	return hash >>> 0;
+  while (i--) hash = ((hash << 5) - hash) ^ str.charCodeAt(i)
+  return hash >>> 0
 }
 
 //= ==========================================================
@@ -197,30 +197,47 @@ document.head.appendChild(style)
 
 const registeredRules = new Set()
 
-// const fix_position = (node) => {
-// 	const style = getComputedStyle(node);
+const fix_position = (node) => {
+  const style = getComputedStyle(node)
 
-// 	if (style.position !== 'absolute' && style.position !== 'fixed') {
-// 		const { width, height } = style;
-// 		const a = node.getBoundingClientRect();
-// 		node.style.position = 'absolute';
-// 		node.style.width = width;
-// 		node.style.height = height;
-// 		add_transform(node, a);
-// 	}
-// }
+  if (style.position !== 'absolute' && style.position !== 'fixed') {
+    const { width, height } = style
+    const a = node.getBoundingClientRect()
+    node.formerPosition = node.style.position
+    node.style.position = 'absolute'
+    node.style.width = width
+    node.style.height = height
+    add_transform(node, a)
+  }
+}
 
-// const add_transform = (node, a) => {
-//   const b = node.getBoundingClientRect();
-//   console.log('static', a);
-//   console.log('absolute', b);
+const add_transform = (node, a) => {
+  const b = node.getBoundingClientRect()
+  console.log('static', a)
+  console.log('absolute', b)
 
-// 	if (a.left !== b.left || a.top !== b.top) {
-// 		const style = getComputedStyle(node);
-// 		const transform = style.transform === 'none' ? '' : style.transform;
+  if (a.left !== b.left || a.top !== b.top) {
+    const style = getComputedStyle(node)
+    const transform = style.transform === 'none' ? '' : style.transform
 
-// 		node.style.transform = `${transform} translate(${a.left - b.left}px, ${a.top - b.top}px)`;
-// 	}
+    node.style.transform = `${transform} translate(${a.left - b.left}px, ${
+      a.top - b.top
+    }px)`
+  }
+}
+
+// const absolute = (node) => {
+//   const style = getComputedStyle(node)
+
+//   if (style.position === 'absolute' || style.position === 'fixed') return
+
+//   const relRect = node.getBoundingClientRect()
+
+//   node.style.position = 'absolute'
+//   node.style.width = relRect.width
+//   node.style.height = relRect.height
+//   node.style.top = `${relRect.top}px`
+//   node.style.left = `${relRect.left}px`
 // }
 
 let i = 0
@@ -233,11 +250,11 @@ const transition = (
     delay: 0,
     easing: linear,
     css: (t, u) => `transform: translate(-${t * 50}px, ${t * 50}px)`,
-    tick: (t, u) => t === 1 ? node.style.animation = '' : ''
+    tick: (t, u) => (t === 1 ? (node.style.animation = '') : '')
   }
 ) => {
   const { duration, delay, easing, css, tick } = params
-  const name = `stroud_${hash(`${i++}`)}`
+  const name = `stroud_${hash(`${(i += 1)}`)}`
   const keyframes = Math.ceil(duration / 16.66)
 
   const rules = `
@@ -256,41 +273,74 @@ const transition = (
 
   style.sheet.insertRule(rules, style.sheet.cssRules.length)
   registeredRules.add(name)
-    
+
   node.style.animation = `${name} ${duration}ms linear ${delay}ms 1 both`
+
+  // if (flag === 'out') {
+  //   fix_position(node)
+  // }
 
   node.onanimationend = () => {
     node.style.animation = ''
+    console.log('animate end!')
     style.sheet.removeRule([...registeredRules].indexOf(name))
     registeredRules.delete(name)
-}
-
-  let next = node.nextElementSibling ? node.nextElementSibling : null
-  while (next) {
-    const nodeRect = node.getBoundingClientRect()
-    const nextRect = next.getBoundingClientRect()
-    const leftDiff = nodeRect.left - nextRect.left
-    const topDiff = nodeRect.top - nextRect.top
-    console.log(leftDiff, topDiff);
-
-    transition('in', next, {
-      delay, 
-      easing, 
-      duration,
-      css: (t, u) => {
-        return `
-        transform: translate(${t * leftDiff}px, ${t * topDiff}px);
-        `
-      },
-      tick: (t, u) => {
-        // if (t === 1) {
-        //   next.style.animation = ''
-        // }
-      }
-    })
-    next = null
   }
- 
+
+  // let next = node.nextElementSibling ? node.nextElementSibling : null
+  // let prev = node
+  // while (next) {
+  //   // absolute(next)
+  //   const prevRect = prev.getBoundingClientRect()
+  //   const nextRect = next.getBoundingClientRect()
+  //   const leftDiff = prevRect.left - nextRect.left
+  //   const topDiff = prevRect.top - nextRect.top
+  //   // console.log(leftDiff, topDiff)
+
+  //   // fix_position(next)
+
+  //   next.ontransitionend = (e) => {
+  //     e.currentTarget.style.position = e.currentTarget.formerPosition
+  //     e.currentTarget.style.transform = ''
+  //     e.currentTarget.style.transition = ''
+  //   }
+  //   next.style.transform = `translate(${leftDiff}px, ${topDiff}px)`
+  //   next.style.transition = `all ${duration}ms linear`
+
+  //   console.log(next.style.transform)
+  //   // stack.push({next, leftDiff, topDiff})
+
+  //   // transition('in', next, {
+  //   //   delay,
+  //   //   easing,
+  //   //   duration,
+  //   //   css: (t, u) => {
+  //   //     return `
+  //   //     transform: translate(${t * leftDiff}px, ${t * topDiff}px);
+  //   //     `
+  //   //   },
+  //   //   tick: (t, u) => {
+  //   //     if (t === 1) {
+  //   //       // next.style.animation = ''
+  //   //       console.log('next sibling shifted!')
+  //   //     }
+  //   //   }
+  //   // })
+  //   prev = next
+  //   next = next.nextElementSibling
+  // }
+
+  // stack.forEach((s) => {
+  //   const {next, leftDiff, topDiff} = s
+  //   next.ontransitionend = (e) => {
+  //     e.currentTarget.style.position = e.currentTarget.formerPosition
+  //     e.currentTarget.style.transform = ''
+  //     e.currentTarget.style.transition = ''
+  //   }
+  //   next.style.transform = `translate(${leftDiff}px, ${topDiff}px)`
+  //   next.style.transition = `all ${duration}ms linear`
+  // })
+
   // JS transition
   const start = Date.now()
   const end = start + duration
