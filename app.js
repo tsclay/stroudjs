@@ -11,25 +11,28 @@ const addChildGracefully = () => {
     'Click me to go out!'
   )
 
-  childDiv.style.background = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`
+  childDiv.style.background = `rgb(${Math.random() * 255}, ${
+    Math.random() * 255
+  }, ${Math.random() * 255})`
 
   const handleExit = (e) => {
     const thisChild = e.currentTarget
     const text = thisChild.textContent
     transition('out', thisChild, {
-      duration: 2000,
+      duration: 40000,
       delay: 0,
       easing: linear,
       css: (t, u) => {
-          return`
+        return `
           transform: translate(${t * 100}px, ${t * 100}px);
           opacity: ${u};
         `
       },
       tick: (t, u) => {
-        // if (t === 1) {
-        //   thisChild.remove()
-        // }
+        if (t === 1) {
+          console.log('removed!')
+          thisChild.remove()
+        }
       }
     })
   }
@@ -42,7 +45,9 @@ const addChildGracefully = () => {
     delay: 0,
     easing: linear,
     css: (t, u) => {
-      return `transform: translateY(${u * 50}px)`
+      const style = getComputedStyle(childDiv)
+      const transform = style.transform === '' ? '' : style.transform
+      return `transform: ${transform} translateY(${u * 50}px)`
     },
     tick: (t, u) => {}
   })
@@ -53,7 +58,7 @@ const resetChildren = () => {
     console.log('All children cleared!')
   })
   while (style.sheet.cssRules.length > 0) {
-    style.sheet.deleteRule(style.sheet.length-1)
+    style.sheet.deleteRule(style.sheet.length - 1)
   }
   registeredRules.clear()
 }
