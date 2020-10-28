@@ -19,7 +19,7 @@ const addChildGracefully = () => {
     const thisChild = e.currentTarget
     const text = thisChild.textContent
     transition('out', thisChild, {
-      duration: 40000,
+      duration: 1000,
       delay: 0,
       easing: linear,
       css: (t, u) => {
@@ -45,9 +45,7 @@ const addChildGracefully = () => {
     delay: 0,
     easing: linear,
     css: (t, u) => {
-      const style = getComputedStyle(childDiv)
-      const transform = style.transform === '' ? '' : style.transform
-      return `transform: ${transform} translateY(${u * 50}px)`
+      return `transform: translateY(${u * 50}px)`
     },
     tick: (t, u) => {}
   })

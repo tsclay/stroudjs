@@ -276,70 +276,12 @@ const transition = (
 
   node.style.animation = `${name} ${duration}ms linear ${delay}ms 1 both`
 
-  // if (flag === 'out') {
-  //   fix_position(node)
-  // }
-
   node.onanimationend = () => {
     node.style.animation = ''
     console.log('animate end!')
     style.sheet.removeRule([...registeredRules].indexOf(name))
     registeredRules.delete(name)
   }
-
-  // let next = node.nextElementSibling ? node.nextElementSibling : null
-  // let prev = node
-  // while (next) {
-  //   // absolute(next)
-  //   const prevRect = prev.getBoundingClientRect()
-  //   const nextRect = next.getBoundingClientRect()
-  //   const leftDiff = prevRect.left - nextRect.left
-  //   const topDiff = prevRect.top - nextRect.top
-  //   // console.log(leftDiff, topDiff)
-
-  //   // fix_position(next)
-
-  //   next.ontransitionend = (e) => {
-  //     e.currentTarget.style.position = e.currentTarget.formerPosition
-  //     e.currentTarget.style.transform = ''
-  //     e.currentTarget.style.transition = ''
-  //   }
-  //   next.style.transform = `translate(${leftDiff}px, ${topDiff}px)`
-  //   next.style.transition = `all ${duration}ms linear`
-
-  //   console.log(next.style.transform)
-  //   // stack.push({next, leftDiff, topDiff})
-
-  //   // transition('in', next, {
-  //   //   delay,
-  //   //   easing,
-  //   //   duration,
-  //   //   css: (t, u) => {
-  //   //     return `
-  //   //     transform: translate(${t * leftDiff}px, ${t * topDiff}px);
-  //   //     `
-  //   //   },
-  //   //   tick: (t, u) => {
-  //   //     if (t === 1) {
-  //   //       // next.style.animation = ''
-  //   //       console.log('next sibling shifted!')
-  //   //     }
-  //   //   }
-  //   // })
-  //   prev = next
-  //   next = next.nextElementSibling
-  // }
-
-  // stack.forEach((s) => {
-  //   const {next, leftDiff, topDiff} = s
-  //   next.ontransitionend = (e) => {
-  //     e.currentTarget.style.position = e.currentTarget.formerPosition
-  //     e.currentTarget.style.transform = ''
-  //     e.currentTarget.style.transition = ''
-  //   }
-  //   next.style.transform = `translate(${leftDiff}px, ${topDiff}px)`
-  //   next.style.transition = `all ${duration}ms linear`
-  // })
 
   // JS transition
   const start = Date.now()
