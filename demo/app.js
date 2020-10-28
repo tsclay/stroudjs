@@ -20,7 +20,7 @@ const addChildGracefully = () => {
     const text = thisChild.textContent
 
     transition('out', thisChild, {
-      duration: 1000,
+      duration: 100,
       delay: 0,
       easing: linear,
       css: (t, u) => {

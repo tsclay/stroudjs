@@ -27,19 +27,19 @@ document.head.appendChild(active)
 
 const registeredRules = new Set()
 
-const fix_position = (node) => {
-  const style = getComputedStyle(node)
+// const fix_position = (node) => {
+//   const style = getComputedStyle(node)
 
-  if (style.position !== 'absolute' && style.position !== 'fixed') {
-    const { width, height } = style
-    const a = node.getBoundingClientRect()
-    node.formerPosition = node.style.position
-    node.style.position = 'absolute'
-    node.style.width = width
-    node.style.height = height
-    add_transform(node, a)
-  }
-}
+//   if (style.position !== 'absolute' && style.position !== 'fixed') {
+//     const { width, height } = style
+//     const a = node.getBoundingClientRect()
+//     node.formerPosition = node.style.position
+//     node.style.position = 'absolute'
+//     node.style.width = width
+//     node.style.height = height
+//     add_transform(node, a)
+//   }
+// }
 
 // const add_transform = (node, a) => {
 //   const b = node.getBoundingClientRect()
@@ -53,19 +53,6 @@ const fix_position = (node) => {
 //     }px)`
 //   }
 // }
-
-const add_transform = (node, a) => {
-  const b = node.getBoundingClientRect()
-
-  if (a.left !== b.left || a.top !== b.top) {
-    const style = getComputedStyle(node)
-    const transform = style.transform === 'none' ? '' : style.transform
-
-    node.style.transform = `${transform} translate(${a.left - b.left}px, ${
-      a.top - b.top
-    }px)`
-  }
-}
 
 // const absolute = (node) => {
 //   const style = getComputedStyle(node)
@@ -119,33 +106,64 @@ const transition = (
 
   node.style.animation = `${name} ${duration}ms linear ${delay}ms 1 both`
 
-  node.onanimationend = () => {
-    node.style.animation = ''
-    console.log('animate end!')
-    active.sheet.removeRule([...registeredRules].indexOf(name))
-    registeredRules.delete(name)
+  if (flag === 'in') {
+    node.onanimationend = () => {
+      node.style.animation = ''
+      console.log('animate end!')
+      active.sheet.removeRule([...registeredRules].indexOf(name))
+      registeredRules.delete(name)
+    }
+  } else if (flag === 'fill') {
+    node.onanimationend = () => {
+      const newPos = node.getBoundingClientRect()
+      node.style.top = `${newPos.top + parseFloat(`${window.scrollY}.00`)}px`
+      node.style.left = `${newPos.left + parseFloat(`${window.scrollX}.00`)}px`
+      node.style.animation = ''
+      node.style.position = ''
+      node.style.top = ''
+      node.style.left = ''
+      console.log('animate end!')
+      active.sheet.removeRule([...registeredRules].indexOf(name))
+      registeredRules.delete(name)
+    }
   }
 
   /*
-    Capture rect of exiting element
-    Set absolute position on exiting element
-    Set nextElementSibling's translate to +rect.left and +rect.top
-    Activate exiting element's transition out
-    Activate nextElementSibling slide over
+    For exiting elements, look for next siblings and have them gracefully fill in the void left by exiting element
   */
-
-  let next = node.nextElementSibling ? node.nextElementSibling : null
   const stack = []
-  while (next) {
-    stack.push(next)
-    next = next.nextElementSibling
+  if (flag === 'out') {
+    let next = node.nextElementSibling ? node.nextElementSibling : null
+
+    while (next) {
+      stack.push(next)
+      next = next.nextElementSibling
+    }
+
+    for (let j = stack.length - 1; j >= 0; j -= 1) {
+      const currentRect = stack[j].getBoundingClientRect()
+      stack[j].style.position = 'absolute'
+      stack[j].style.top = `${currentRect.top + window.scrollY}px`
+      stack[j].style.left = `${currentRect.left + window.scrollX}px`
+    }
   }
 
   for (let j = stack.length - 1; j >= 0; j -= 1) {
     const currentRect = stack[j].getBoundingClientRect()
-    stack[j].style.position = 'absolute'
-    stack[j].style.top = `${currentRect.top + window.scrollY}px`
-    stack[j].style.left = `${currentRect.left + window.scrollX}px`
+    const prevFill = stack[j - 1]
+      ? stack[j - 1].getBoundingClientRect()
+      : node.getBoundingClientRect()
+    transition('fill', stack[j], {
+      duration,
+      delay,
+      easing: linear,
+      css: (t, u) => {
+        return `transform: translate(${
+          (prevFill.left - currentRect.left) * t
+        }px, ${(prevFill.top - currentRect.top) * t}px)`
+      },
+      tick: (t, u) => ''
+    })
   }
 
   // JS transition if any
