@@ -224,6 +224,7 @@ const registeredRules = new Set()
 // }
 
 let i = 0
+
 const transition = (
   flag,
   node,
@@ -258,25 +259,20 @@ const transition = (
     
   node.style.animation = `${name} ${duration}ms linear ${delay}ms 1 both`
 
-  let prev = node
+  node.onanimationend = () => {
+    node.style.animation = ''
+    style.sheet.removeRule([...registeredRules].indexOf(name))
+    registeredRules.delete(name)
+}
+
   let next = node.nextElementSibling ? node.nextElementSibling : null
-  const shift_siblings = []
   while (next) {
-    const prevRect = prev.getBoundingClientRect()
+    const nodeRect = node.getBoundingClientRect()
     const nextRect = next.getBoundingClientRect()
-    const leftDiff = prevRect.left - nextRect.left
-    const topDiff = prevRect.top - nextRect.top
+    const leftDiff = nodeRect.left - nextRect.left
+    const topDiff = nodeRect.top - nextRect.top
     console.log(leftDiff, topDiff);
 
-    // fix_position(next)
-
-    shift_siblings.push({next, leftDiff, topDiff})
-    prev = next
-    next = next.nextElementSibling
-  }
-
-  shift_siblings.forEach((s, i) => {
-    const {next, leftDiff, topDiff} = s
     transition('in', next, {
       delay, 
       easing, 
@@ -292,14 +288,8 @@ const transition = (
         // }
       }
     })
-    shift_siblings.splice(i, 1)
-  })
-
- node.onanimationend = () => {
-    node.style.animation = ''
-    style.sheet.removeRule([...registeredRules].indexOf(name))
-    registeredRules.delete(name)
-}
+    next = null
+  }
  
   // JS transition
   const start = Date.now()

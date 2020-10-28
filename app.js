@@ -38,7 +38,7 @@ const addChildGracefully = () => {
 
   searchForOne('.box').appendChild(childDiv)
   transition('in', childDiv, {
-    duration: 300,
+    duration: 100,
     delay: 0,
     easing: linear,
     css: (t, u) => {
