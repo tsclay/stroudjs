@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 /* eslint-disable no-self-assign */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
