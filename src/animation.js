@@ -27,6 +27,8 @@ document.head.appendChild(active)
 
 const registeredRules = new Set()
 
+let i = 0
+
 // const fix_position = (node) => {
 //   const style = getComputedStyle(node)
 
@@ -68,8 +70,17 @@ const registeredRules = new Set()
 //   node.style.left = `${relRect.left}px`
 // }
 
-let i = 0
-
+/**
+ *
+ * @param {String} flag Assign 'in' or 'out' depending on whether your element is entering or exiting the DOM
+ * @param {HTMLElement} node The element that is entering or exiting the DOM
+ * @param {Object} params The parameters object for the CSS or JS animation
+ * @param {Number} params.duration Animation duration in ms
+ * @param {Number} params.delay Animation delay in ms
+ * @param {Function} params.easing The easing function to use for the animation
+ * @param {Function} params.css The CSS function that returns a string representing the CSS for the animation
+ * @param {Function} params.tick The function that performs a transformation on the node using JS on every ```requestAnimationFrame```
+ */
 const transition = (
   flag,
   node,
@@ -134,6 +145,7 @@ const transition = (
   const stack = []
   if (flag === 'out') {
     let next = node.nextElementSibling ? node.nextElementSibling : null
+    console.log(next)
 
     while (next) {
       stack.push(next)
@@ -185,4 +197,70 @@ const transition = (
     requestAnimationFrame(loop)
   }
   requestAnimationFrame(loop)
+}
+
+const flip = (node, target) => {
+  // get node rect
+  // make node absolute pos
+  // get node rect at absolute pos
+  // add animation using node current coords
+  // append node to target
+  // destroy node at old pos
+  // const rA = node.getBoundingClientRect()
+  // node.style.position = 'absolute'
+  // node.style.top = `${rA.top + window.scrollY}px`
+  // node.style.left = `${rA.left + window.scrollX}px`
+  // target.appendChild(node)
+  // const rB = node.getBoundingClientRect()
+  // console.log(rA, rB)
+
+  const stack = []
+  let next = node.nextElementSibling ? node.nextElementSibling : null
+  console.log(next)
+
+  while (next) {
+    stack.push(next)
+    next = next.nextElementSibling
+  }
+
+  for (let j = stack.length - 1; j >= 0; j -= 1) {
+    const currentRect = stack[j].getBoundingClientRect()
+    stack[j].style.position = 'absolute'
+    stack[j].style.top = `${currentRect.top + window.scrollY}px`
+    stack[j].style.left = `${currentRect.left + window.scrollX}px`
+  }
+
+  for (let j = stack.length - 1; j >= 0; j -= 1) {
+    const currentRect = stack[j].getBoundingClientRect()
+    const prevFill = stack[j - 1]
+      ? stack[j - 1].getBoundingClientRect()
+      : node.getBoundingClientRect()
+    transition('fill', stack[j], {
+      duration: 1000,
+      delay: 0,
+      easing: linear,
+      css: (t, u) => {
+        return `transform: translate(${
+          (prevFill.left - currentRect.left) * t
+        }px, ${(prevFill.top - currentRect.top) * t}px)`
+      },
+      tick: (t, u) => ''
+    })
+  }
+
+  const rA = node.getBoundingClientRect()
+  target.appendChild(node)
+  const rB = node.getBoundingClientRect()
+
+  transition('flip', node, {
+    duration: 2000,
+    delay: 0,
+    easing: linear,
+    css: (t, u) => {
+      return `transform: translate(${(rA.left - rB.left) * u}px, ${
+        (rA.top - rB.top) * u
+      }px)`
+    },
+    tick: (t, u) => ''
+  })
 }
