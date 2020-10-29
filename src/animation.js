@@ -81,7 +81,7 @@ let i = 0
  * @param {Function} params.css The CSS function that returns a string representing the CSS for the animation
  * @param {Function} params.tick The function that performs a transformation on the node using JS on every ```requestAnimationFrame```
  */
-const transition = (
+function transition(
   flag,
   node,
   params = {
@@ -91,7 +91,7 @@ const transition = (
     css: (t, u) => `transform: translate(-${t * 50}px, ${t * 50}px)`,
     tick: (t, u) => (t === 1 ? (node.style.animation = '') : '')
   }
-) => {
+) {
   const { duration, delay, easing, css, tick } = params
   const name = `stroud_${hash(`${(i += 1)}`)}`
   const keyframes = Math.ceil(duration / 16.66)
@@ -142,40 +142,8 @@ const transition = (
   /*
     For exiting elements, look for next siblings and have them gracefully fill in the void left by exiting element
   */
-  const stack = []
   if (flag === 'out') {
-    let next = node.nextElementSibling ? node.nextElementSibling : null
-    console.log(next)
-
-    while (next) {
-      stack.push(next)
-      next = next.nextElementSibling
-    }
-
-    for (let j = stack.length - 1; j >= 0; j -= 1) {
-      const currentRect = stack[j].getBoundingClientRect()
-      stack[j].style.position = 'absolute'
-      stack[j].style.top = `${currentRect.top + window.scrollY}px`
-      stack[j].style.left = `${currentRect.left + window.scrollX}px`
-    }
-  }
-
-  for (let j = stack.length - 1; j >= 0; j -= 1) {
-    const currentRect = stack[j].getBoundingClientRect()
-    const prevFill = stack[j - 1]
-      ? stack[j - 1].getBoundingClientRect()
-      : node.getBoundingClientRect()
-    transition('fill', stack[j], {
-      duration,
-      delay,
-      easing: linear,
-      css: (t, u) => {
-        return `transform: translate(${
-          (prevFill.left - currentRect.left) * t
-        }px, ${(prevFill.top - currentRect.top) * t}px)`
-      },
-      tick: (t, u) => ''
-    })
+    unshiftSiblings(node, { duration, delay, easing })
   }
 
   // JS transition if any
@@ -199,21 +167,8 @@ const transition = (
   requestAnimationFrame(loop)
 }
 
-const flip = (node, target) => {
-  // get node rect
-  // make node absolute pos
-  // get node rect at absolute pos
-  // add animation using node current coords
-  // append node to target
-  // destroy node at old pos
-  // const rA = node.getBoundingClientRect()
-  // node.style.position = 'absolute'
-  // node.style.top = `${rA.top + window.scrollY}px`
-  // node.style.left = `${rA.left + window.scrollX}px`
-  // target.appendChild(node)
-  // const rB = node.getBoundingClientRect()
-  // console.log(rA, rB)
-
+function unshiftSiblings(node, params) {
+  const { duration = 300, delay = 0, easing = linear } = params
   const stack = []
   let next = node.nextElementSibling ? node.nextElementSibling : null
   console.log(next)
@@ -238,19 +193,21 @@ const flip = (node, target) => {
     const dx = prevFill.left - currentRect.left
     const dy = prevFill.top - currentRect.top
     const style = getComputedStyle(stack[j])
-    const transform = style.transform === "none" ? '' : style.transform
+    const transform = style.transform === 'none' ? '' : style.transform
     transition('fill', stack[j], {
-      duration: 300,
-      delay: 0,
-      easing: linear,
+      duration,
+      delay,
+      easing,
       css: (t, u) => {
-        return `transform: ${transform} translate(${
-          (dx) * t
-        }px, ${(dy) * t}px)`
+        return `transform: ${transform} translate(${dx * t}px, ${dy * t}px)`
       },
       tick: (t, u) => ''
     })
   }
+}
+
+function flip(node, target) {
+  unshiftSiblings(node, { duration: 300, delay: 0, easing: linear })
 
   const rA = node.getBoundingClientRect()
   target.appendChild(node)
