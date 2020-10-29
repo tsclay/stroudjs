@@ -235,14 +235,18 @@ const flip = (node, target) => {
     const prevFill = stack[j - 1]
       ? stack[j - 1].getBoundingClientRect()
       : node.getBoundingClientRect()
+    const dx = prevFill.left - currentRect.left
+    const dy = prevFill.top - currentRect.top
+    const style = getComputedStyle(stack[j])
+    const transform = style.transform === "none" ? '' : style.transform
     transition('fill', stack[j], {
-      duration: 1000,
+      duration: 300,
       delay: 0,
       easing: linear,
       css: (t, u) => {
-        return `transform: translate(${
-          (prevFill.left - currentRect.left) * t
-        }px, ${(prevFill.top - currentRect.top) * t}px)`
+        return `transform: ${transform} translate(${
+          (dx) * t
+        }px, ${(dy) * t}px)`
       },
       tick: (t, u) => ''
     })
@@ -253,7 +257,7 @@ const flip = (node, target) => {
   const rB = node.getBoundingClientRect()
 
   transition('flip', node, {
-    duration: 2000,
+    duration: 300,
     delay: 0,
     easing: linear,
     css: (t, u) => {

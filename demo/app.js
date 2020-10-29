@@ -83,6 +83,9 @@ function handleBox2() {
 
     const handleFlip = (e) => {
       const thisChild = e.currentTarget
+      // thisChild.onanimationend = () => {
+      //   flip(thisChild, searchForAll('.box')[1])
+      // }
       flip(thisChild, searchForAll('.box')[0])
     }
 
