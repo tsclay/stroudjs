@@ -72,17 +72,19 @@ function transition(
   }
   `
 
-  active.sheet.insertRule(rules, active.sheet.cssRules.length)
+  active.sheet.insertRule(rules, active.sheet.rules.length)
   registeredRules.add(name)
+  console.log('before', registeredRules)
 
   node.style.animation = `${name} ${duration}ms linear ${delay}ms 1 both`
 
-  if (flag === 'in') {
+  if (flag === 'in' || flag === 'out') {
     node.onanimationend = () => {
       node.style.animation = ''
 
-      active.sheet.removeRule([...registeredRules].indexOf(name))
-      registeredRules.delete(name)
+      active.sheet.removeRule(0)
+      registeredRules.clear()
+      console.log('end IN', registeredRules)
     }
   } else if (flag === 'fill') {
     node.onanimationend = () => {
@@ -94,8 +96,9 @@ function transition(
       node.style.top = ''
       node.style.left = ''
 
-      active.sheet.removeRule([...registeredRules].indexOf(name))
-      registeredRules.delete(name)
+      active.sheet.removeRule(0)
+      registeredRules.clear()
+      console.log('end FILL', registeredRules)
     }
   }
 
