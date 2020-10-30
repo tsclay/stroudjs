@@ -30,47 +30,6 @@ const registeredRules = new Set()
 
 let i = 0
 
-// const fix_position = (node) => {
-//   const style = getComputedStyle(node)
-
-//   if (style.position !== 'absolute' && style.position !== 'fixed') {
-//     const { width, height } = style
-//     const a = node.getBoundingClientRect()
-//     node.formerPosition = node.style.position
-//     node.style.position = 'absolute'
-//     node.style.width = width
-//     node.style.height = height
-//     add_transform(node, a)
-//   }
-// }
-
-// const add_transform = (node, a) => {
-//   const b = node.getBoundingClientRect()
-
-//   if (a.left !== b.left || a.top !== b.top) {
-//     const style = getComputedStyle(node)
-//     const transform = style.transform === 'none' ? '' : style.transform
-
-//     node.style.transform = `${transform} translate(${a.left - b.left}px, ${
-//       a.top - b.top
-//     }px)`
-//   }
-// }
-
-// const absolute = (node) => {
-//   const style = getComputedStyle(node)
-
-//   if (style.position === 'absolute' || style.position === 'fixed') return
-
-//   const relRect = node.getBoundingClientRect()
-
-//   node.style.position = 'absolute'
-//   node.style.width = relRect.width
-//   node.style.height = relRect.height
-//   node.style.top = `${relRect.top}px`
-//   node.style.left = `${relRect.left}px`
-// }
-
 /**
  *
  * @param {String} flag Assign 'in' or 'out' depending on whether your element is entering or exiting the DOM
@@ -91,8 +50,7 @@ function transition(
     easing: linear,
     css: (t, u) => `transform: translate(-${t * 50}px, ${t * 50}px)`,
     tick: (t, u) => (t === 1 ? (node.style.animation = '') : '')
-  },
-  parent
+  }
 ) {
   const { duration, delay, easing, css, tick } = params
   const name = `stroud_${hash(`${(i += 1)}`)}`
@@ -122,7 +80,7 @@ function transition(
   if (flag === 'in') {
     node.onanimationend = () => {
       node.style.animation = ''
-      console.log('animate end!')
+
       active.sheet.removeRule([...registeredRules].indexOf(name))
       registeredRules.delete(name)
     }
@@ -135,7 +93,7 @@ function transition(
       node.style.position = ''
       node.style.top = ''
       node.style.left = ''
-      console.log('animate end!')
+
       active.sheet.removeRule([...registeredRules].indexOf(name))
       registeredRules.delete(name)
     }
@@ -147,7 +105,7 @@ function transition(
 
   if (flag === 'out') {
     unshiftSiblings(node, { duration, delay, easing })
-  } else if (flag === 'in') {
+  } else if (flag === 'in' || flag === 'flip') {
     pushSiblings(node, { duration, delay, easing })
   }
 
@@ -173,10 +131,12 @@ function transition(
 }
 
 function unshiftSiblings(node, params) {
-  const { duration = 300, delay = 0, easing = linear } = params
-  const stack = []
   let next = node.nextElementSibling ? node.nextElementSibling : null
-  console.log(next)
+
+  if (!next) return
+
+  const stack = []
+  const { duration = 300, delay = 0, easing = linear } = params
 
   while (next) {
     stack.push(next)
@@ -188,10 +148,6 @@ function unshiftSiblings(node, params) {
     stack[j].style.position = 'absolute'
     stack[j].style.top = `${currentRect.top + window.scrollY}px`
     stack[j].style.left = `${currentRect.left + window.scrollX}px`
-  }
-
-  for (let j = stack.length - 1; j >= 0; j -= 1) {
-    const currentRect = stack[j].getBoundingClientRect()
     const prevFill = stack[j - 1]
       ? stack[j - 1].getBoundingClientRect()
       : node.getBoundingClientRect()
@@ -212,10 +168,12 @@ function unshiftSiblings(node, params) {
 }
 
 function pushSiblings(node, params) {
-  const { duration = 300, delay = 0, easing = linear } = params
-  const stack = []
   let next = node.nextElementSibling ? node.nextElementSibling : null
-  console.log(next)
+
+  if (!next) return
+
+  const stack = []
+  const { duration = 300, delay = 0, easing = linear } = params
 
   while (next) {
     stack.push(next)
@@ -227,11 +185,7 @@ function pushSiblings(node, params) {
     stack[j].style.position = 'absolute'
     stack[j].style.top = `${currentRect.top + window.scrollY}px`
     stack[j].style.left = `${currentRect.left + window.scrollX}px`
-    console.log(j, stack[j].style.left)
-  }
 
-  for (let j = stack.length - 1; j >= 0; j -= 1) {
-    const currentRect = stack[j].getBoundingClientRect()
     const prevFill = stack[j - 1]
       ? stack[j - 1].getBoundingClientRect()
       : currentRect
@@ -240,7 +194,7 @@ function pushSiblings(node, params) {
         ? currentRect.width * -1.0
         : prevFill.left - currentRect.left
     const dy = prevFill.top - currentRect.top
-    console.log(j, dx, dy)
+
     const style = getComputedStyle(stack[j])
     const transform = style.transform === 'none' ? '' : style.transform
     transition('fill', stack[j], {
@@ -255,11 +209,23 @@ function pushSiblings(node, params) {
   }
 }
 
-function flip(node, target) {
+/**
+ * Animate a node's transfer to another element in the DOM.
+ *
+ * @param {HTMLElement} target The parent node taking in the new element
+ * @param {String} flag Either 'append', which will call ```target.appendChild(node)``` or 'prepend' which calls ```target.prepend(node)```
+ * @param {HTMLElement} node The node being moved to ```target```
+ * @param {Function} [callback] Execute code when flip has completed
+ */
+function flip(target, flag, node, callback) {
   unshiftSiblings(node, { duration: 300, delay: 0, easing: linear })
 
   const rA = node.getBoundingClientRect()
-  target.appendChild(node)
+  if (flag === 'append') {
+    target.appendChild(node)
+  } else if (flag === 'prepend') {
+    target.prepend(node)
+  }
   const rB = node.getBoundingClientRect()
 
   transition('flip', node, {
@@ -271,6 +237,10 @@ function flip(node, target) {
         (rA.top - rB.top) * u
       }px)`
     },
-    tick: (t, u) => ''
+    tick: (t, u) => {
+      if (t === 1 && callback) {
+        callback()
+      }
+    }
   })
 }
