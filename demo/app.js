@@ -30,7 +30,7 @@ function handleBox1() {
       const text = thisChild.textContent
 
       transition('out', thisChild, {
-        duration: 200,
+        duration: 300,
         delay: 0,
         easing: linear,
         css: (t, u) => {
@@ -50,13 +50,13 @@ function handleBox1() {
 
     childDiv.addEventListener('click', handleExit)
 
-    // searchForOne('.box').appendChild(childDiv)
-    searchForOne('.box').prepend(childDiv)
+    searchForOne('.box').appendChild(childDiv)
+    // searchForOne('.box').prepend(childDiv)
     transition(
       'in',
       childDiv,
       {
-        duration: 800,
+        duration: 300,
         delay: 0,
         easing: linear,
         css: (t, u) => {
