@@ -50,13 +50,13 @@ function handleBox1() {
 
     childDiv.addEventListener('click', handleExit)
 
-    searchForOne('.box').appendChild(childDiv)
-    // searchForOne('.box').prepend(childDiv)
+    // searchForOne('.box').appendChild(childDiv)
+    searchForOne('.box').prepend(childDiv)
     transition(
       'in',
       childDiv,
       {
-        duration: 300,
+        duration: 1000,
         delay: 0,
         easing: linear,
         css: (t, u) => {

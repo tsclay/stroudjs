@@ -237,7 +237,7 @@ function pushSiblings(node, params) {
       : currentRect
     const dx =
       currentRect === prevFill
-        ? currentRect.left * -1.0
+        ? currentRect.width * -1.0
         : prevFill.left - currentRect.left
     const dy = prevFill.top - currentRect.top
     console.log(j, dx, dy)
