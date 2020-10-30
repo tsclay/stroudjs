@@ -10,14 +10,20 @@
     <script src="../src/dom.js"></script>
   </head>
   <body>
-    <div class="btn-group">
-      <button id="transition-btn">Transition</button>
-      <button id="reset">Reset</button>
-      <button id="flip">FLIP</button>
+    <div id="left-workspace">
+      <div class="left-btn-group">
+        <button id="prepend-btn">Prepend</button>
+        <button id="append-btn">Append</button>
+        <button id="reset">Reset</button>
+      </div>
+      <div class="box"></div>
     </div>
 
-    <div id="workspace">
-      <div class="box"></div>
+    <div id="right-workspace">
+      <div class="right-btn-group">
+        <button id="flip-aft">FLIP - Append</button>
+        <button id="flip-pre">FLIP - Prepend</button>
+      </div>
       <div class="box"></div>
     </div>
 
