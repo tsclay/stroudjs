@@ -30,7 +30,7 @@ function handleBox1() {
       const text = thisChild.textContent
 
       transition('out', thisChild, {
-        duration: 100,
+        duration: 200,
         delay: 0,
         easing: linear,
         css: (t, u) => {
@@ -50,16 +50,22 @@ function handleBox1() {
 
     childDiv.addEventListener('click', handleExit)
 
-    searchForOne('.box').appendChild(childDiv)
-    transition('in', childDiv, {
-      duration: 100,
-      delay: 0,
-      easing: linear,
-      css: (t, u) => {
-        return `transform: translateY(${u * 50}px)`
+    // searchForOne('.box').appendChild(childDiv)
+    searchForOne('.box').prepend(childDiv)
+    transition(
+      'in',
+      childDiv,
+      {
+        duration: 800,
+        delay: 0,
+        easing: linear,
+        css: (t, u) => {
+          return `transform: translateY(${u * 50}px)`
+        },
+        tick: (t, u) => {}
       },
-      tick: (t, u) => {}
-    })
+      searchForOne('.box')
+    )
   }
 
   resetBtn.addEventListener('click', resetChildren)

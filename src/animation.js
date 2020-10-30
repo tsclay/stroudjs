@@ -91,7 +91,8 @@ function transition(
     easing: linear,
     css: (t, u) => `transform: translate(-${t * 50}px, ${t * 50}px)`,
     tick: (t, u) => (t === 1 ? (node.style.animation = '') : '')
-  }
+  },
+  parent
 ) {
   const { duration, delay, easing, css, tick } = params
   const name = `stroud_${hash(`${(i += 1)}`)}`
@@ -143,8 +144,11 @@ function transition(
   /*
     For exiting elements, look for next siblings and have them gracefully fill in the void left by exiting element
   */
+
   if (flag === 'out') {
     unshiftSiblings(node, { duration, delay, easing })
+  } else if (flag === 'in') {
+    pushSiblings(node, { duration, delay, easing })
   }
 
   // JS transition if any
@@ -201,6 +205,50 @@ function unshiftSiblings(node, params) {
       easing,
       css: (t, u) => {
         return `transform: ${transform} translate(${dx * t}px, ${dy * t}px)`
+      },
+      tick: (t, u) => ''
+    })
+  }
+}
+
+function pushSiblings(node, params) {
+  const { duration = 300, delay = 0, easing = linear } = params
+  const stack = []
+  let next = node.nextElementSibling ? node.nextElementSibling : null
+  console.log(next)
+
+  while (next) {
+    stack.push(next)
+    next = next.nextElementSibling
+  }
+
+  for (let j = stack.length - 1; j >= 0; j -= 1) {
+    const currentRect = stack[j].getBoundingClientRect()
+    stack[j].style.position = 'absolute'
+    stack[j].style.top = `${currentRect.top + window.scrollY}px`
+    stack[j].style.left = `${currentRect.left + window.scrollX}px`
+    console.log(j, stack[j].style.left)
+  }
+
+  for (let j = stack.length - 1; j >= 0; j -= 1) {
+    const currentRect = stack[j].getBoundingClientRect()
+    const prevFill = stack[j - 1]
+      ? stack[j - 1].getBoundingClientRect()
+      : currentRect
+    const dx =
+      currentRect === prevFill
+        ? currentRect.left * -1.0
+        : prevFill.left - currentRect.left
+    const dy = prevFill.top - currentRect.top
+    console.log(j, dx, dy)
+    const style = getComputedStyle(stack[j])
+    const transform = style.transform === 'none' ? '' : style.transform
+    transition('fill', stack[j], {
+      duration,
+      delay,
+      easing,
+      css: (t, u) => {
+        return `transform: ${transform} translate(${dx * u}px, ${dy * u}px)`
       },
       tick: (t, u) => ''
     })
