@@ -1,18 +1,39 @@
 const resetChildren = () => {
-  removeNodes(searchForAll('.child'), () => {
-    console.log('All children cleared!')
-  })
+  removeNodes(searchForAll('.child'), () => {})
   while (active.sheet.cssRules.length > 0) {
     active.sheet.deleteRule(active.sheet.length - 1)
   }
   registeredRules.clear()
 }
 
-function handleBox1() {
-  const transitionBtn = searchForOne('#transition-btn')
+const handleExit = (e) => {
+  const thisChild = e.currentTarget
+  const text = thisChild.textContent
+
+  transition('out', thisChild, {
+    duration: 300,
+    delay: 0,
+    easing: linear,
+    css: (t, u) => {
+      return `
+        transform: translate(${t * 100}px, ${t * 100}px);
+        opacity: ${u};
+      `
+    },
+    tick: (t, u) => {
+      if (t === 1) {
+        thisChild.remove()
+      }
+    }
+  })
+}
+
+const handleBox1 = () => {
+  const prependBtn = searchForOne('#prepend-btn')
+  const appendBtn = searchForOne('#append-btn')
   const resetBtn = searchForOne('#reset')
 
-  const addChildGracefully = () => {
+  const prependChildGracefully = () => {
     const childDiv = createElement(
       'div',
       {
@@ -27,12 +48,10 @@ function handleBox1() {
 
     const handleExit = (e) => {
       const thisChild = e.currentTarget
-      const text = thisChild.textContent
-
       transition('out', thisChild, {
         duration: 300,
         delay: 0,
-        easing: linear,
+        easing: sineOut,
         css: (t, u) => {
           return `
             transform: translate(${t * 100}px, ${t * 100}px);
@@ -41,7 +60,6 @@ function handleBox1() {
         },
         tick: (t, u) => {
           if (t === 1) {
-            console.log('removed!')
             thisChild.remove()
           }
         }
@@ -50,17 +68,18 @@ function handleBox1() {
 
     childDiv.addEventListener('click', handleExit)
 
-    // searchForOne('.box').appendChild(childDiv)
     searchForOne('.box').prepend(childDiv)
     transition(
       'in',
       childDiv,
       {
-        duration: 1000,
+        duration: 200,
         delay: 0,
-        easing: linear,
+        easing: circIn,
         css: (t, u) => {
-          return `transform: translateY(${u * 50}px)`
+          return `
+          transform: translateY(${u * 50}px)
+          `
         },
         tick: (t, u) => {}
       },
@@ -68,32 +87,60 @@ function handleBox1() {
     )
   }
 
-  resetBtn.addEventListener('click', resetChildren)
-  transitionBtn.addEventListener('click', addChildGracefully)
-}
-
-function handleBox2() {
-  const box = searchForAll('.box')[1]
-  const flipBtn = searchForOne('#flip')
-
-  const addChildGracefully = () => {
+  const appendChildGracefully = () => {
     const childDiv = createElement(
       'div',
       {
         class: 'child'
       },
-      'Send me to Box 1!'
+      'Click me to go out!'
+    )
+
+    childDiv.style.background = `rgb(${Math.random() * 255}, ${
+      Math.random() * 255
+    }, ${Math.random() * 255})`
+
+    childDiv.addEventListener('click', handleExit)
+
+    searchForOne('.box').appendChild(childDiv)
+    transition('in', childDiv, {
+      duration: 1000,
+      delay: 0,
+      easing: linear,
+      css: (t, u) => {
+        return `transform: translateY(${u * 50}px)`
+      },
+      tick: (t, u) => {}
+    })
+  }
+
+  resetBtn.addEventListener('click', resetChildren)
+  prependBtn.addEventListener('click', prependChildGracefully)
+  appendBtn.addEventListener('click', appendChildGracefully)
+}
+
+const handleBox2 = () => {
+  const box = searchForAll('.box')[1]
+  const flipAft = searchForOne('#flip-aft')
+  const flipPre = searchForOne('#flip-pre')
+
+  const flipAppend = () => {
+    const handleFlip = (e) => {
+      const thisChild = e.currentTarget
+      flip(searchForAll('.box')[0], 'append', thisChild, () => {
+        thisChild.removeEventListener('click', handleFlip)
+        thisChild.addEventListener('click', handleExit)
+      })
+    }
+    const childDiv = createElement(
+      'div',
+      {
+        class: 'child'
+      },
+      'APPEND me to Box 1!'
     )
 
     childDiv.style.background = `rgb(${0.5 * 255}, ${0.5 * 255}, ${0.5 * 255})`
-
-    const handleFlip = (e) => {
-      const thisChild = e.currentTarget
-      // thisChild.onanimationend = () => {
-      //   flip(thisChild, searchForAll('.box')[1])
-      // }
-      flip(thisChild, searchForAll('.box')[0])
-    }
 
     childDiv.addEventListener('click', handleFlip)
 
@@ -105,11 +152,46 @@ function handleBox2() {
       css: (t, u) => {
         return `transform: translateY(${u * 50}px)`
       },
+      tick: (t, u) => ''
+    })
+  }
+
+  const flipPrepend = () => {
+    const handleFlip = (e) => {
+      const thisChild = e.currentTarget
+      flip(searchForAll('.box')[0], 'prepend', thisChild, () => {
+        thisChild.removeEventListener('click', handleFlip)
+        thisChild.addEventListener('click', handleExit)
+      })
+    }
+    const childDiv = createElement(
+      'div',
+      {
+        class: 'child'
+      },
+      'PREPEND me to Box 1!'
+    )
+
+    childDiv.style.background = `rgb(${0.25 * 255}, ${0.25 * 255}, ${
+      0.25 * 255
+    })`
+
+    childDiv.addEventListener('click', handleFlip)
+
+    box.prepend(childDiv)
+    transition('in', childDiv, {
+      duration: 100,
+      delay: 0,
+      easing: linear,
+      css: (t, u) => {
+        return `transform: translateY(${u * -50}px)`
+      },
       tick: (t, u) => {}
     })
   }
 
-  flipBtn.addEventListener('click', addChildGracefully)
+  flipAft.addEventListener('click', flipAppend)
+  flipPre.addEventListener('click', flipPrepend)
 }
 
 handleBox1()
