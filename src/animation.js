@@ -153,25 +153,25 @@ function transition(
 
 function unshiftSiblings(node, params) {
   let next = node.nextElementSibling ? node.nextElementSibling : null
-  console.log(node.formerPos);
+  console.log(node.formerPos)
 
   if (!next) return
 
   const stack = []
-  let firstOutgoing
-  if (
-    node.previousElementSibling &&
-    node.previousElementSibling.dataset.animation === 'out'
-  ) {
-    firstOutgoing = node.previousElementSibling
-  }
+  // let firstOutgoing
+  // if (
+  //   node.previousElementSibling &&
+  //   node.previousElementSibling.dataset.animation === 'out'
+  // ) {
+  //   firstOutgoing = node.previousElementSibling
+  // }
   const { duration = 300, delay = 0, easing = linear } = params
 
   while (next) {
-    if (next.dataset.animation === 'out') {
-      next = next.nextElementSibling
-      continue
-    }
+    // if (next.dataset.animation === 'out') {
+    //   next = next.nextElementSibling
+    //   continue
+    // }
     stack.push(next)
     next = next.nextElementSibling
   }
@@ -182,18 +182,18 @@ function unshiftSiblings(node, params) {
     stack[j].style.position = 'absolute'
     stack[j].style.top = `${currentRect.top + window.scrollY}px`
     stack[j].style.left = `${currentRect.left + window.scrollX}px`
-    let prevFill
-    if (firstOutgoing) {
-      prevFill = firstOutgoing.formerPos
-    } else if (stack[j - 1]) {
-      prevFill = stack[j - 1].getBoundingClientRect()
-    } else {
-      prevFill = node.getBoundingClientRect()
-      console.log('else block');
-    }
-    // const prevFill = stack[j - 1]
-    //   ? stack[j - 1].getBoundingClientRect()
-    //   : node.getBoundingClientRect()
+    // let prevFill
+    // if (firstOutgoing) {
+    //   prevFill = firstOutgoing.formerPos
+    // } else if (stack[j - 1]) {
+    //   prevFill = stack[j - 1].getBoundingClientRect()
+    // } else {
+    //   prevFill = node.getBoundingClientRect()
+    //   console.log('else block');
+    // }
+    const prevFill = stack[j - 1]
+      ? stack[j - 1].getBoundingClientRect()
+      : node.getBoundingClientRect()
     const dx = prevFill.left - currentRect.left
     const dy = prevFill.top - currentRect.top
     // console.log(j, currentRect.left, currentRect.top)
