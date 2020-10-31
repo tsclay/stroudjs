@@ -60,11 +60,11 @@ function transition(
 
   if (flag === 'out') {
     node.dataset.animation = 'out'
-    const currentRect = node.getBoundingClientRect()
-    unshiftSiblings(node, currentRect, { duration, delay, easing })
+    node.formerPos = node.getBoundingClientRect()
+    unshiftSiblings(node, { duration, delay, easing })
     node.style.position = 'absolute'
-    node.style.top = `${currentRect.top + window.scrollY}px`
-    node.style.left = `${currentRect.left + window.scrollX}px`
+    node.style.top = `${node.formerPos.top + window.scrollY}px`
+    node.style.left = `${node.formerPos.left + window.scrollX}px`
   } else if (flag === 'in' || flag === 'flip') {
     pushSiblings(node, { duration, delay, easing })
   }
@@ -151,8 +151,9 @@ function transition(
   requestAnimationFrame(loop)
 }
 
-function unshiftSiblings(node, nodeFrom, params) {
+function unshiftSiblings(node, params) {
   let next = node.nextElementSibling ? node.nextElementSibling : null
+  console.log(node.formerPos);
 
   if (!next) return
 
@@ -183,11 +184,12 @@ function unshiftSiblings(node, nodeFrom, params) {
     stack[j].style.left = `${currentRect.left + window.scrollX}px`
     let prevFill
     if (firstOutgoing) {
-      prevFill = nodeFrom
+      prevFill = firstOutgoing.formerPos
     } else if (stack[j - 1]) {
       prevFill = stack[j - 1].getBoundingClientRect()
     } else {
       prevFill = node.getBoundingClientRect()
+      console.log('else block');
     }
     // const prevFill = stack[j - 1]
     //   ? stack[j - 1].getBoundingClientRect()
