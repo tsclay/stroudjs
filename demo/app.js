@@ -11,7 +11,7 @@ const handleExit = (e) => {
   const text = thisChild.textContent
 
   transition('out', thisChild, {
-    duration: 300,
+    duration: 1000,
     delay: 0,
     easing: linear,
     css: (t, u) => {
@@ -104,7 +104,7 @@ const handleBox1 = () => {
 
     searchForOne('.box').appendChild(childDiv)
     transition('in', childDiv, {
-      duration: 1000,
+      duration: 300,
       delay: 0,
       easing: linear,
       css: (t, u) => {

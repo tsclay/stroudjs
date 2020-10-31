@@ -58,6 +58,17 @@ function transition(
   const style = getComputedStyle(node)
   const transform = style.transform === 'none' ? '' : style.transform
 
+  if (flag === 'out') {
+    node.dataset.animation = 'out'
+    unshiftSiblings(node, { duration, delay, easing })
+    const currentRect = node.getBoundingClientRect()
+    node.style.position = 'absolute'
+    node.style.top = `${currentRect.top + window.scrollY}px`
+    node.style.left = `${currentRect.left + window.scrollX}px`
+  } else if (flag === 'in' || flag === 'flip') {
+    pushSiblings(node, { duration, delay, easing })
+  }
+
   const rules = `
   @keyframes ${name} {
     ${Array(keyframes)
@@ -80,6 +91,13 @@ function transition(
 
   if (flag === 'in' || flag === 'out') {
     node.onanimationend = () => {
+      const newPos = node.getBoundingClientRect()
+      node.style.top = `${newPos.top + parseFloat(`${window.scrollY}.00`)}px`
+      node.style.left = `${newPos.left + parseFloat(`${window.scrollX}.00`)}px`
+      node.style.animation = ''
+      node.style.position = ''
+      node.style.top = ''
+      node.style.left = ''
       node.style.animation = ''
 
       active.sheet.removeRule(0)
@@ -105,12 +123,12 @@ function transition(
   /*
     For exiting elements, look for next siblings and have them gracefully fill in the void left by exiting element
   */
-
-  if (flag === 'out') {
-    unshiftSiblings(node, { duration, delay, easing })
-  } else if (flag === 'in' || flag === 'flip') {
-    pushSiblings(node, { duration, delay, easing })
-  }
+  // if (flag === 'out') {
+  //   node.dataset.animation = 'out'
+  //   unshiftSiblings(node, { duration, delay, easing })
+  // } else if (flag === 'in' || flag === 'flip') {
+  //   pushSiblings(node, { duration, delay, easing })
+  // }
 
   // JS transition if any
   const start = Date.now()
@@ -147,10 +165,14 @@ function unshiftSiblings(node, params) {
   }
 
   for (let j = stack.length - 1; j >= 0; j -= 1) {
+    if (stack[j].dataset.animation === 'out') {
+      continue
+    }
     const currentRect = stack[j].getBoundingClientRect()
     stack[j].style.position = 'absolute'
     stack[j].style.top = `${currentRect.top + window.scrollY}px`
     stack[j].style.left = `${currentRect.left + window.scrollX}px`
+
     const prevFill = stack[j - 1]
       ? stack[j - 1].getBoundingClientRect()
       : node.getBoundingClientRect()
