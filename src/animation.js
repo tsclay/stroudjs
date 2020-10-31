@@ -160,19 +160,19 @@ function unshiftSiblings(node, params) {
   const { duration = 300, delay = 0, easing = linear } = params
 
   while (next) {
+    if (next.dataset.animation === 'out') {
+      next = next.nextElementSibling
+      continue
+    }
     stack.push(next)
     next = next.nextElementSibling
   }
 
   for (let j = stack.length - 1; j >= 0; j -= 1) {
-    if (stack[j].dataset.animation === 'out') {
-      continue
-    }
     const currentRect = stack[j].getBoundingClientRect()
     stack[j].style.position = 'absolute'
     stack[j].style.top = `${currentRect.top + window.scrollY}px`
     stack[j].style.left = `${currentRect.left + window.scrollX}px`
-
     const prevFill = stack[j - 1]
       ? stack[j - 1].getBoundingClientRect()
       : node.getBoundingClientRect()
