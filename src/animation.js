@@ -158,7 +158,6 @@ function unshiftSiblings(node, params) {
   if (!next) return
 
   const stack = []
-  // const out = []
   let firstOutgoing
   if (
     node.previousElementSibling &&
@@ -172,7 +171,6 @@ function unshiftSiblings(node, params) {
 
   while (next) {
     if (next.dataset.animation === 'out') {
-      // out.push({ el: next, rect: next.getBoundingClientRect() })
       next = next.nextElementSibling
       continue
     }
@@ -200,15 +198,9 @@ function unshiftSiblings(node, params) {
       prevFill = stack[j - 1].rect
     } else {
       prevFill = node.formerPos
-      console.log('else block')
     }
-    // const prevFill = stack[j - 1]
-    //   ? stack[j - 1].getBoundingClientRect()
-    //   : node.getBoundingClientRect()
     const dx = prevFill.left - currentRect.left
     const dy = prevFill.top - currentRect.top
-    // console.log(j, currentRect.left, currentRect.top)
-    // console.log(j, dx, dy)
     const style = getComputedStyle(stack[j].el)
     const transform = style.transform === 'none' ? '' : style.transform
     transition('fill', stack[j].el, {
