@@ -158,17 +158,21 @@ function unshiftSiblings(node, params) {
   if (!next) return
 
   const stack = []
+  // const out = []
   let firstOutgoing
   if (
     node.previousElementSibling &&
     node.previousElementSibling.dataset.animation === 'out'
   ) {
     firstOutgoing = node.previousElementSibling
+  } else if (next.dataset.animation === 'out') {
+    firstOutgoing = node
   }
   const { duration = 300, delay = 0, easing = linear } = params
 
   while (next) {
     if (next.dataset.animation === 'out') {
+      // out.push({ el: next, rect: next.getBoundingClientRect() })
       next = next.nextElementSibling
       continue
     }
@@ -270,9 +274,9 @@ function pushSiblings(node, params) {
  * @param {Function} [callback] Execute code when flip has completed
  */
 function flip(target, flag, node, callback) {
-  unshiftSiblings(node, { duration: 300, delay: 0, easing: linear })
-
   const rA = node.getBoundingClientRect()
+  node.formerPos = rA
+  unshiftSiblings(node, { duration: 300, delay: 0, easing: linear })
   if (flag === 'append') {
     target.appendChild(node)
   } else if (flag === 'prepend') {
