@@ -172,23 +172,30 @@ function unshiftSiblings(node, params) {
       next = next.nextElementSibling
       continue
     }
-    stack.push(next)
+    stack.push({ el: next, rect: next.getBoundingClientRect() })
     next = next.nextElementSibling
   }
 
   for (let j = stack.length - 1; j >= 0; j -= 1) {
     console.log('outgoing first', firstOutgoing)
-    const currentRect = stack[j].getBoundingClientRect()
-    stack[j].style.position = 'absolute'
-    stack[j].style.top = `${currentRect.top + window.scrollY}px`
-    stack[j].style.left = `${currentRect.left + window.scrollX}px`
+    if (stack[j].el.dataset.animation === 'out') continue
+    const currentRect = stack[j].rect
+    stack[j].el.style.position = 'absolute'
+    stack[j].el.style.top = `${currentRect.top + window.scrollY}px`
+    stack[j].el.style.left = `${currentRect.left + window.scrollX}px`
     let prevFill
-    if (firstOutgoing) {
+    if (firstOutgoing && j === 0) {
       prevFill = firstOutgoing.formerPos
+    } else if (stack[j - 1] && firstOutgoing) {
+      let left = stack[j - 1].rect.left - firstOutgoing.formerPos.left
+      left = left === 0 ? stack[j - 1].rect.left : left
+      let top = stack[j - 1].rect.top - firstOutgoing.formerPos.top
+      top = top === 0 ? stack[j - 1].rect.top : top
+      prevFill = { left, top }
     } else if (stack[j - 1]) {
-      prevFill = stack[j - 1].getBoundingClientRect()
+      prevFill = stack[j - 1].rect
     } else {
-      prevFill = node.getBoundingClientRect()
+      prevFill = node.formerPos
       console.log('else block')
     }
     // const prevFill = stack[j - 1]
@@ -198,10 +205,9 @@ function unshiftSiblings(node, params) {
     const dy = prevFill.top - currentRect.top
     // console.log(j, currentRect.left, currentRect.top)
     // console.log(j, dx, dy)
-    const style = getComputedStyle(stack[j])
+    const style = getComputedStyle(stack[j].el)
     const transform = style.transform === 'none' ? '' : style.transform
-    console.log(transform)
-    transition('fill', stack[j], {
+    transition('fill', stack[j].el, {
       duration,
       delay,
       easing,
