@@ -60,8 +60,8 @@ function transition(
 
   if (flag === 'out') {
     node.dataset.animation = 'out'
-    unshiftSiblings(node, { duration, delay, easing })
     const currentRect = node.getBoundingClientRect()
+    unshiftSiblings(node, currentRect, { duration, delay, easing })
     node.style.position = 'absolute'
     node.style.top = `${currentRect.top + window.scrollY}px`
     node.style.left = `${currentRect.left + window.scrollX}px`
@@ -85,7 +85,7 @@ function transition(
 
   active.sheet.insertRule(rules, active.sheet.rules.length)
   registeredRules.add(name)
-  console.log('before', registeredRules)
+  // console.log('before', registeredRules)
 
   node.style.animation = `${name} ${duration}ms linear ${delay}ms 1 both`
 
@@ -102,7 +102,7 @@ function transition(
 
       active.sheet.removeRule(0)
       registeredRules.clear()
-      console.log('end IN', registeredRules)
+      // console.log('end IN', registeredRules)
     }
   } else if (flag === 'fill') {
     node.onanimationend = () => {
@@ -116,7 +116,7 @@ function transition(
 
       active.sheet.removeRule(0)
       registeredRules.clear()
-      console.log('end FILL', registeredRules)
+      // console.log('end FILL', registeredRules)
     }
   }
 
@@ -151,12 +151,19 @@ function transition(
   requestAnimationFrame(loop)
 }
 
-function unshiftSiblings(node, params) {
+function unshiftSiblings(node, nodeFrom, params) {
   let next = node.nextElementSibling ? node.nextElementSibling : null
 
   if (!next) return
 
   const stack = []
+  let firstOutgoing
+  if (
+    node.previousElementSibling &&
+    node.previousElementSibling.dataset.animation === 'out'
+  ) {
+    firstOutgoing = node.previousElementSibling
+  }
   const { duration = 300, delay = 0, easing = linear } = params
 
   while (next) {
@@ -169,23 +176,35 @@ function unshiftSiblings(node, params) {
   }
 
   for (let j = stack.length - 1; j >= 0; j -= 1) {
+    console.log('outgoing first', firstOutgoing)
     const currentRect = stack[j].getBoundingClientRect()
     stack[j].style.position = 'absolute'
     stack[j].style.top = `${currentRect.top + window.scrollY}px`
     stack[j].style.left = `${currentRect.left + window.scrollX}px`
-    const prevFill = stack[j - 1]
-      ? stack[j - 1].getBoundingClientRect()
-      : node.getBoundingClientRect()
+    let prevFill
+    if (firstOutgoing) {
+      prevFill = nodeFrom
+    } else if (stack[j - 1]) {
+      prevFill = stack[j - 1].getBoundingClientRect()
+    } else {
+      prevFill = node.getBoundingClientRect()
+    }
+    // const prevFill = stack[j - 1]
+    //   ? stack[j - 1].getBoundingClientRect()
+    //   : node.getBoundingClientRect()
     const dx = prevFill.left - currentRect.left
     const dy = prevFill.top - currentRect.top
+    // console.log(j, currentRect.left, currentRect.top)
+    // console.log(j, dx, dy)
     const style = getComputedStyle(stack[j])
     const transform = style.transform === 'none' ? '' : style.transform
+    console.log(transform)
     transition('fill', stack[j], {
       duration,
       delay,
       easing,
       css: (t, u) => {
-        return `transform: ${transform} translate(${dx * t}px, ${dy * t}px)`
+        return `transform: translate(${dx * t}px, ${dy * t}px)`
       },
       tick: (t, u) => ''
     })

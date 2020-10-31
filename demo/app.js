@@ -16,7 +16,7 @@ const handleExit = (e) => {
     easing: linear,
     css: (t, u) => {
       return `
-        transform: translate(${t * 100}px, ${t * 100}px);
+        transform: translate(${t * 100}px, ${t * 0}px);
         opacity: ${u};
       `
     },
@@ -49,7 +49,7 @@ const handleBox1 = () => {
     const handleExit = (e) => {
       const thisChild = e.currentTarget
       transition('out', thisChild, {
-        duration: 300,
+        duration: 1000,
         delay: 0,
         easing: sineOut,
         css: (t, u) => {
