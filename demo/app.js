@@ -11,7 +11,7 @@ const handleExit = (e) => {
   const text = thisChild.textContent
 
   transition('out', thisChild, {
-    duration: 1000,
+    duration: 600,
     delay: 0,
     easing: linear,
     css: (t, u) => {

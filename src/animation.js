@@ -106,9 +106,9 @@ function transition(
     }
   } else if (flag === 'fill') {
     node.onanimationend = () => {
-      const newPos = node.getBoundingClientRect()
-      node.style.top = `${newPos.top + parseFloat(`${window.scrollY}.00`)}px`
-      node.style.left = `${newPos.left + parseFloat(`${window.scrollX}.00`)}px`
+      // const newPos = node.getBoundingClientRect()
+      // node.style.top = `${newPos.top + parseFloat(`${window.scrollY}.00`)}px`
+      // node.style.left = `${newPos.left + parseFloat(`${window.scrollX}.00`)}px`
       node.style.animation = ''
       node.style.position = ''
       node.style.top = ''
@@ -152,65 +152,54 @@ function transition(
 }
 
 function unshiftSiblings(node, params) {
-  let next = node.nextElementSibling ? node.nextElementSibling : null
-  console.log(node.formerPos)
+  const next = node.nextElementSibling ? node.nextElementSibling : null
 
   if (!next) return
 
-  const stack = []
-  let firstOutgoing
-  if (
-    node.previousElementSibling &&
-    node.previousElementSibling.dataset.animation === 'out'
-  ) {
-    firstOutgoing = node.previousElementSibling
-  } else if (next.dataset.animation === 'out') {
-    firstOutgoing = node
-  }
+  const stack = [...node.parentElement.children]
+  console.log(stack)
+  let offset = 0
+
   const { duration = 300, delay = 0, easing = linear } = params
 
-  while (next) {
-    if (next.dataset.animation === 'out') {
-      next = next.nextElementSibling
-      continue
+  for (let j = stack.length - 1; j >= 0; j--) {
+    stack[j].formerPosition = stack[j].formerPosition
+      ? stack[j].formerPosition
+      : stack[j].getBoundingClientRect()
+    if (stack[j].style.position !== 'absolute') {
+      stack[j].style.position = 'absolute'
+      stack[j].style.top = `${stack[j].formerPosition.top + window.scrollY}px`
+      stack[j].style.left = `${stack[j].formerPosition.left + window.scrollX}px`
     }
-    stack.push({ el: next, rect: next.getBoundingClientRect() })
-    next = next.nextElementSibling
   }
 
-  for (let j = stack.length - 1; j >= 0; j -= 1) {
-    console.log('outgoing first', firstOutgoing)
-    if (stack[j].el.dataset.animation === 'out') continue
-    const currentRect = stack[j].rect
-    stack[j].el.style.position = 'absolute'
-    stack[j].el.style.top = `${currentRect.top + window.scrollY}px`
-    stack[j].el.style.left = `${currentRect.left + window.scrollX}px`
-    let prevFill
-    if (firstOutgoing && j === 0) {
-      prevFill = firstOutgoing.formerPos
-    } else if (stack[j - 1] && firstOutgoing) {
-      let left = stack[j - 1].rect.left - firstOutgoing.formerPos.left
-      left = left === 0 ? stack[j - 1].rect.left : left
-      let top = stack[j - 1].rect.top - firstOutgoing.formerPos.top
-      top = top === 0 ? stack[j - 1].rect.top : top
-      prevFill = { left, top }
-    } else if (stack[j - 1]) {
-      prevFill = stack[j - 1].rect
-    } else {
-      prevFill = node.formerPos
+  for (let j = 0; j < stack.length; j++) {
+    if (stack[j].dataset.animation === 'out') {
+      offset += 1
+      continue
     }
+    const currentRect = stack[j].getBoundingClientRect()
+    stack[j].style.position = 'absolute'
+    stack[j].style.top = `${currentRect.top + window.scrollY}px`
+    stack[j].style.left = `${currentRect.left + window.scrollX}px`
+    const prevFill = stack[j - offset].formerPosition
     const dx = prevFill.left - currentRect.left
     const dy = prevFill.top - currentRect.top
-    const style = getComputedStyle(stack[j].el)
+    const style = getComputedStyle(stack[j])
     const transform = style.transform === 'none' ? '' : style.transform
-    transition('fill', stack[j].el, {
+
+    transition('fill', stack[j], {
       duration,
       delay,
       easing,
       css: (t, u) => {
         return `transform: translate(${dx * t}px, ${dy * t}px)`
       },
-      tick: (t, u) => ''
+      tick: (t, u) => {
+        if (t === 1) {
+          stack[j].formerPosition = ''
+        }
+      }
     })
   }
 }
@@ -267,7 +256,7 @@ function pushSiblings(node, params) {
  */
 function flip(target, flag, node, callback) {
   const rA = node.getBoundingClientRect()
-  node.formerPos = rA
+  node.formerPosition = rA
   unshiftSiblings(node, { duration: 300, delay: 0, easing: linear })
   if (flag === 'append') {
     target.appendChild(node)
