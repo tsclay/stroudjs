@@ -11,7 +11,7 @@ const handleExit = (e) => {
   const text = thisChild.textContent
 
   transition('out', thisChild, {
-    duration: 600,
+    duration: 300,
     delay: 0,
     easing: linear,
     css: (t, u) => {
@@ -45,26 +45,6 @@ const handleBox1 = () => {
     childDiv.style.background = `rgb(${Math.random() * 255}, ${
       Math.random() * 255
     }, ${Math.random() * 255})`
-
-    const handleExit = (e) => {
-      const thisChild = e.currentTarget
-      transition('out', thisChild, {
-        duration: 1000,
-        delay: 0,
-        easing: sineOut,
-        css: (t, u) => {
-          return `
-            transform: translate(${t * 100}px, ${t * 100}px);
-            opacity: ${u};
-          `
-        },
-        tick: (t, u) => {
-          if (t === 1) {
-            thisChild.remove()
-          }
-        }
-      })
-    }
 
     childDiv.addEventListener('click', handleExit)
 

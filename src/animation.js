@@ -120,16 +120,6 @@ function transition(
     }
   }
 
-  /*
-    For exiting elements, look for next siblings and have them gracefully fill in the void left by exiting element
-  */
-  // if (flag === 'out') {
-  //   node.dataset.animation = 'out'
-  //   unshiftSiblings(node, { duration, delay, easing })
-  // } else if (flag === 'in' || flag === 'flip') {
-  //   pushSiblings(node, { duration, delay, easing })
-  // }
-
   // JS transition if any
   const start = Date.now()
   const end = start + duration
