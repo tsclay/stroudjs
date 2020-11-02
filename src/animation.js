@@ -85,7 +85,6 @@ function transition(
 
   active.sheet.insertRule(rules, active.sheet.rules.length)
   registeredRules.add(name)
-  // console.log('before', registeredRules)
 
   node.style.animation = `${name} ${duration}ms linear ${delay}ms 1 both`
 
@@ -102,13 +101,9 @@ function transition(
 
       active.sheet.removeRule(0)
       registeredRules.clear()
-      // console.log('end IN', registeredRules)
     }
   } else if (flag === 'fill') {
     node.onanimationend = () => {
-      // const newPos = node.getBoundingClientRect()
-      // node.style.top = `${newPos.top + parseFloat(`${window.scrollY}.00`)}px`
-      // node.style.left = `${newPos.left + parseFloat(`${window.scrollX}.00`)}px`
       node.style.animation = ''
       node.style.position = ''
       node.style.top = ''
@@ -116,7 +111,6 @@ function transition(
 
       active.sheet.removeRule(0)
       registeredRules.clear()
-      // console.log('end FILL', registeredRules)
     }
   }
 
@@ -156,7 +150,10 @@ function unshiftSiblings(node, params) {
     stack[j].formerPosition = stack[j].formerPosition
       ? stack[j].formerPosition
       : stack[j].getBoundingClientRect()
-    if (stack[j].style.position !== 'absolute') {
+    if (
+      stack[j].style.position !== 'absolute' &&
+      stack[j].dataset.animation !== 'flip'
+    ) {
       stack[j].style.position = 'absolute'
       stack[j].style.top = `${stack[j].formerPosition.top + window.scrollY}px`
       stack[j].style.left = `${stack[j].formerPosition.left + window.scrollX}px`
@@ -164,7 +161,10 @@ function unshiftSiblings(node, params) {
   }
 
   for (let j = 0; j < stack.length; j++) {
-    if (stack[j].dataset.animation === 'out') {
+    if (
+      stack[j].dataset.animation === 'out' ||
+      stack[j].dataset.animation === 'flip'
+    ) {
       offset += 1
       continue
     }
@@ -247,13 +247,19 @@ function pushSiblings(node, params) {
 function flip(target, flag, node, callback) {
   const rA = node.getBoundingClientRect()
   node.formerPosition = rA
+  node.dataset.animation = 'flip'
   unshiftSiblings(node, { duration: 300, delay: 0, easing: linear })
   if (flag === 'append') {
+    console.log('append')
     target.appendChild(node)
   } else if (flag === 'prepend') {
     target.prepend(node)
+    console.log('prepend')
   }
+
   const rB = node.getBoundingClientRect()
+
+  console.log(rA.left - rB.left, rA.top - rB.top)
 
   transition('flip', node, {
     duration: 300,
@@ -265,6 +271,10 @@ function flip(target, flag, node, callback) {
       }px)`
     },
     tick: (t, u) => {
+      if (t === 1) {
+        node.dataset.animation = ''
+        node.formerPosition = ''
+      }
       if (t === 1 && callback) {
         callback()
       }
