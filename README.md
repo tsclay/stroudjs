@@ -4,13 +4,15 @@ A slim library of helper functions for use in vanilla JS projects
 
 ## About
 
-Writing this set of helper functions came about as result of building a custom CMS using Python and Javascript. I had made the conscious decision to not use any framework or library, mainly to learn and practice what it means to "manipulate the DOM".
+Writing this set of helper functions came about as result of building a custom CMS using Python and Javascript. I had made the conscious decision to not use any framework or library, mainly to practice manipulating the DOM only using code I write.
 
-When I think of writing front-end code without a framework or library like React, I compare it to surviving in the wilderness with only a small set of tools given at the outset. The name "stroudjs" is a nod to Les Stroud, the guy behind the outdoor-survival show *Survivorman*.
+When I think of writing front-end code without a framework or library like React, I compare it to surviving in the wilderness with only a small set of tools given at the outset. These helper functions are such tools. 
 
 ## DOM Helpers
 
 ### Find things using CSS selectors
+
+Writing ```document.querySelector()``` or ```document.getElementById()``` grows tedious.
 
 ```javascript
 const searchForOne = (string) => document.querySelector(string)
@@ -124,7 +126,7 @@ const removeNodes = (nodes, callback) => {
 
 ### `empty()`
 
-Remove children nodes from a parent node.
+Remove children nodes from a parent node. Useful for nodes whose content is populated by ```fetch()``` results.
 A callback can be called at the end of this event if needed.
 
 ```javascript
@@ -135,3 +137,8 @@ const empty = (parent, callback) => {
   if (typeof callback === 'function') callback()
 }
 ```
+
+## Animation Helpers
+
+### transition()
+
