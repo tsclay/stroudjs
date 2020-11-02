@@ -47,7 +47,6 @@ const createElement = (tag, attributes = null, innerText = null) => {
  * Create SVG elements. A wrapper around ```document.createElementNS()``` with helpers for setting attributes.
  *
  * @param {String} tag - The SVG element to create, such as 'svg', 'path', 'g', so on
- * @param {String} qualifiedName - The tag name for the element
  * @param {Object} [attributes] - (Optional) Object containing attributes to set: ```element.setAttribute(key, value)```
  * @param {String|Number} attributes.attributeName - The element attribute you wish to set and its value
  * @param {Number[]} viewBox - [viewBoxWidth, viewBoxHeight] to set the viewbox
@@ -77,6 +76,10 @@ const createSVG = (tag, attributes, viewBox, dimensions) => {
   }
   return svgElement
 }
+
+//= ==========================================================
+// Grouping
+//= ==========================================================
 
 /**
  * Append list of elements to a created fragment. Elements will be siblings to each other.
@@ -108,7 +111,7 @@ const nestElements = (parent, children) => {
 }
 
 //= ==========================================================
-// DOM Manipulation
+// Removal
 //= ==========================================================
 
 /**
@@ -126,7 +129,6 @@ const nestElements = (parent, children) => {
  */
 const removeNodes = (nodes, callback) => {
   nodes.forEach((n) => {
-    const len = nodes.length
     n.remove()
   })
   if (typeof callback === 'function') {
