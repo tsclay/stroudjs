@@ -191,3 +191,4 @@ The flip function allows one to have a node transition out from one element and 
 
 - `animation.js`: Inability to customize the `params` argument for neighboring nodes
   - May cause negative side effects in certain cases, but will need testing
+- `animation.js`: Using `flip()` seems to not work well with `unshiftSiblings()` as animations seem to end prematurely if there are multiple nodes flipping
