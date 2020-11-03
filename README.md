@@ -140,5 +140,7 @@ const empty = (parent, callback) => {
 
 ## Animation Helpers
 
+These were inspired by my experience with the Svelte framework.
+
 ### transition()
 
