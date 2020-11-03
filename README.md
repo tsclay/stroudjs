@@ -2,15 +2,9 @@
 
 A slim library of helper functions for use in vanilla JS projects
 
-## About
-
-Writing this set of helper functions came about as result of building a custom CMS using Python and Javascript. I had made the conscious decision to not use any framework or library, mainly to practice manipulating the DOM only using code I write.
-
-When I think of writing front-end code without a framework or library like React, I compare it to surviving in the wilderness with only a small set of tools given at the outset. These helper functions are such tools. 
-
 ## DOM Helpers
 
-### Find things using CSS selectors
+### `searchForOne()` and `searchForAll()`
 
 Writing ```document.querySelector()``` or ```document.getElementById()``` grows tedious.
 
@@ -140,7 +134,60 @@ const empty = (parent, callback) => {
 
 ## Animation Helpers
 
-These were inspired by my experience with the Svelte framework.
+These were inspired by my experience with the Svelte framework. 
 
-### transition()
+Refer to [this talk](https://www.youtube.com/watch?v=FxMyqxc8Fx0) from Svelte Summit 2020 for how Svelte handles animation. The presenter Tan Li Hau demonstrates how one would write something like Svelte's transition function using vanilla Javascript.
 
+### `transition()`
+
+Give appended/prepended nodes a smooth entrance and give them a smooth exit.
+
+- `flag` - Assign 'in' or 'out' depending on whether your element is entering or exiting the DOM
+- `node` - The element that is entering or exiting the DOM
+- `params` - The parameters object for the CSS or JS animation
+
+`params` is based on Svelte's "transition contract. The default params look like this:
+
+```javascript
+params = {
+  duration: 300,
+  delay: 0,
+  easing: linear,
+  css: (t, u) => `transform: translate(-${t * 50}px, ${t * 50}px)`,
+  tick: (t, u) => (t === 1 ? (node.style.animation = '') : '')
+}
+```
+
+Refer to `easings.js` for the easing functions. These take the place of writing `cubic-bezier()` in a CSS file.
+
+The transition function creates keyframes for the transition animation, adds them to a style sheet, and runs the animation.
+Both CSS and JS animations are possible with this function.
+
+![transition demo](assets/transition.gif "Transition Demo")
+
+If the transitioning node has siblings, those siblings are animated such that they smoothly fill in empty space left by the removed nodes and they smoothly make space for prepended nodes. 
+
+*The neighboring nodes will take on the parameters given to the outgoing element.* So, if an outgoing element's `params` argument includes `{duration: 1000, delay: 100, ...}` then the neighboring nodes will receive the same.
+
+![Dynamic animation](assets/dynamic-shift.gif "Dynamic Adjusting")
+
+#### ⚠️ Caveat ⚠️
+
+If your outgoing transition's duration is set to >= 1000, then too many simultaneously-exiting nodes will cause shifting nodes to not complete their animations.
+
+![Bug](assets/bug.gif "Bug with too many exiters")
+
+### `flip()`
+
+The flip function allows one to have a node transition out from one element and transition into another one.
+
+`target` - The parent node taking in the new element
+`flag` - Either 'append', which will call ```target.appendChild(node)``` or 'prepend' which calls ```target.prepend(node)``` node The node being moved to ```target```
+`callback` - Execute code when flip has completed
+
+![flip demo](assets/flip.gif "Flip Demo")
+
+### 🕷 Known Issues 🕷
+
+- `animation.js`: Inability to customize the `params` argument for neighboring nodes
+  - May cause negative side effects in certain cases, but will need testing
