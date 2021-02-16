@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
@@ -35,6 +36,19 @@
       a {
         color: rgb(95, 214, 250);
       }
+
+      section {
+        margin-top: 2rem;
+      }
+
+      section > h3:not(:first-of-type) {
+        width: 75%;
+        margin-top: 3rem;
+      }
+
+      section > h3 {
+        border-bottom: solid 1px rgba(255, 255, 255, 0.18);
+      }
     </style>
     <style>
       .task-list-item {
@@ -55,30 +69,31 @@
       use jQuery-like things).
     </p>
     <p>Interactive demo <a href="/public/demo/demo.html">here</a></p>
-    <h2 id="dom-helpers">DOM Helpers</h2>
-    <h3 id="searchforone-and-searchforall">
-      <code>searchForOne()</code> and <code>searchForAll()</code>
-    </h3>
-    <p>
-      Writing <code>document.querySelector()</code> or
-      <code>document.getElementById()</code> grows tedious.
-    </p>
-    <pre><code class="language-javascript"><div><span >const</span> searchForOne = <span >(<span >string</span>) =&gt;</span> <span >document</span>.querySelector(string)
+    <section>
+      <h2 id="dom-helpers">DOM Helpers</h2>
+      <h3 id="searchforone-and-searchforall">
+        <code>searchForOne()</code> and <code>searchForAll()</code>
+      </h3>
+      <p>
+        Writing <code>document.querySelector()</code> or
+        <code>document.getElementById()</code> grows tedious.
+      </p>
+      <pre><code class="language-javascript"><div><span >const</span> searchForOne = <span >(<span >string</span>) =&gt;</span> <span >document</span>.querySelector(string)
 <span >const</span> searchForAll = <span >(<span >string</span>) =&gt;</span> <span >document</span>.querySelectorAll(string)
 </div></code></pre>
-    <h3 id="createelement"><code>createElement()</code></h3>
-    <ul>
-      <li><code>element</code> - The element to create</li>
-      <li>
-        <code>attributes</code> - Object containing attributes to set:
-        <code>element.setAttribute(key, value)</code>
-        <ul>
-          <li><code>{class: 'foo', "data-id": 'bar'}</code></li>
-        </ul>
-      </li>
-      <li><code>innerText</code> - The innerText to set on the element</li>
-    </ul>
-    <pre><code class="language-javascript"><div><span >const</span> createElement = <span >(<span >tag, attributes = <span >null</span>, innerText = <span >null</span></span>) =&gt;</span> {
+      <h3 id="createelement"><code>createElement()</code></h3>
+      <ul>
+        <li><code>element</code> - The element to create</li>
+        <li>
+          <code>attributes</code> - Object containing attributes to set:
+          <code>element.setAttribute(key, value)</code>
+          <ul>
+            <li><code>{class: 'foo', "data-id": 'bar'}</code></li>
+          </ul>
+        </li>
+        <li><code>innerText</code> - The innerText to set on the element</li>
+      </ul>
+      <pre><code class="language-javascript"><div><span >const</span> createElement = <span >(<span >tag, attributes = <span >null</span>, innerText = <span >null</span></span>) =&gt;</span> {
 <span >const</span> element = <span >document</span>.createElement(tag)
 <span >if</span> (attributes) {
   <span >const</span> valuePairs = <span >Object</span>.entries(attributes)
@@ -93,12 +108,12 @@
 <span >return</span> element
 }
 </div></code></pre>
-    <p>
-      If you're familiar with
-      <a href="https://docs.sencha.com/extjs/6.2.0/index.html">ExtJs</a> then
-      this may look somewhat familiar:
-    </p>
-    <pre><code class="language-javascript"><div> <span >const</span> childDiv = createElement(
+      <p>
+        If you're familiar with
+        <a href="https://docs.sencha.com/extjs/6.2.0/index.html">ExtJs</a> then
+        this may look somewhat familiar:
+      </p>
+      <pre><code class="language-javascript"><div> <span >const</span> childDiv = createElement(
     <span >'div'</span>,
     {
       <span >class</span>: <span >'child'</span>
@@ -106,33 +121,33 @@
     <span >'Click me to go out!'</span>
   )
 </div></code></pre>
-    <h3 id="createsvg"><code>createSVG()</code></h3>
-    <p>
-      A wrapper around <code>document.createElementNS()</code> with helpers for
-      setting attributes.
-    </p>
-    <ul>
-      <li>
-        <code>tag</code> - The SVG element to create, such as 'svg', 'path',
-        'g', so on
-      </li>
-      <li>
-        <code>attributes</code> - (Optional) Object containing attributes to
-        set:
-        <code>element.setAttribute(key, value)</code> attributes.attributeName -
-        The element attribute you wish to set and its value
-      </li>
-      <li>
-        <code>viewBox</code> - Array containing width and height as integers to
-        set for the viewbox
-      </li>
-      <li>
-        <code>dimensions</code> - Set a width and height different from viewBox
-        if needed. Can be numbers or strings representing a percentage. If not
-        provided, <code>viewBox</code> array is used
-      </li>
-    </ul>
-    <pre><code class="language-javascript"><div><span >const</span> createSVG = <span >(<span >tag, attributes, viewBox, dimensions</span>) =&gt;</span> {
+      <h3 id="createsvg"><code>createSVG()</code></h3>
+      <p>
+        A wrapper around <code>document.createElementNS()</code> with helpers
+        for setting attributes.
+      </p>
+      <ul>
+        <li>
+          <code>tag</code> - The SVG element to create, such as 'svg', 'path',
+          'g', so on
+        </li>
+        <li>
+          <code>attributes</code> - (Optional) Object containing attributes to
+          set:
+          <code>element.setAttribute(key, value)</code> attributes.attributeName
+          - The element attribute you wish to set and its value
+        </li>
+        <li>
+          <code>viewBox</code> - Array containing width and height as integers
+          to set for the viewbox
+        </li>
+        <li>
+          <code>dimensions</code> - Set a width and height different from
+          viewBox if needed. Can be numbers or strings representing a
+          percentage. If not provided, <code>viewBox</code> array is used
+        </li>
+      </ul>
+      <pre><code class="language-javascript"><div><span >const</span> createSVG = <span >(<span >tag, attributes, viewBox, dimensions</span>) =&gt;</span> {
 <span >const</span> xmlns = <span >'http://www.w3.org/2000/svg'</span>
 <span >const</span> svgElement = <span >document</span>.createElementNS(xmlns, tag)
 <span >if</span> (tag === <span >'svg'</span>) {
@@ -157,31 +172,32 @@
 <span >return</span> svgElement
 }
 </div></code></pre>
-    <h3 id="nestelements"><code>nestElements()</code></h3>
-    <p>Append elements to a given parent element.</p>
-    <ul>
-      <li>
-        <code>parent</code> - The parent node to which children will be appended
-      </li>
-      <li>
-        <code>children</code> - Array of children elements that will go inside
-        <code>parent</code>
-      </li>
-    </ul>
-    <pre><code class="language-javascript"><div><span >const</span> nestElements = <span >(<span >parent, children</span>) =&gt;</span> {
+      <h3 id="nestelements"><code>nestElements()</code></h3>
+      <p>Append elements to a given parent element.</p>
+      <ul>
+        <li>
+          <code>parent</code> - The parent node to which children will be
+          appended
+        </li>
+        <li>
+          <code>children</code> - Array of children elements that will go inside
+          <code>parent</code>
+        </li>
+      </ul>
+      <pre><code class="language-javascript"><div><span >const</span> nestElements = <span >(<span >parent, children</span>) =&gt;</span> {
 children.forEach(<span >(<span >c</span>) =&gt;</span> {
   parent.appendChild(c)
 })
 <span >return</span> parent
 }
 </div></code></pre>
-    <h3 id="removenodes"><code>removeNodes()</code></h3>
-    <p>Iteratively remove nodes from the DOM.</p>
-    <ul>
-      <li><code>nodes</code> - Array of nodes to remove from the DOM.</li>
-      <li><code>callback</code> - Optional callback to perform when done</li>
-    </ul>
-    <pre><code class="language-javascript"><div><span >const</span> removeNodes = <span >(<span >nodes, callback</span>) =&gt;</span> {
+      <h3 id="removenodes"><code>removeNodes()</code></h3>
+      <p>Iteratively remove nodes from the DOM.</p>
+      <ul>
+        <li><code>nodes</code> - Array of nodes to remove from the DOM.</li>
+        <li><code>callback</code> - Optional callback to perform when done</li>
+      </ul>
+      <pre><code class="language-javascript"><div><span >const</span> removeNodes = <span >(<span >nodes, callback</span>) =&gt;</span> {
 nodes.forEach(<span >(<span >n</span>) =&gt;</span> {
   n.remove()
 })
@@ -190,13 +206,13 @@ nodes.forEach(<span >(<span >n</span>) =&gt;</span> {
 }
 }
 </div></code></pre>
-    <h3 id="empty"><code>empty()</code></h3>
-    <p>
-      Remove children nodes from a parent node. Useful for nodes whose content
-      is populated by <code>fetch()</code> results. A callback can be called at
-      the end of this event if needed.
-    </p>
-    <pre><code class="language-javascript"><div><span >const</span> empty = <span >(<span >parent, callback</span>) =&gt;</span> {
+      <h3 id="empty"><code>empty()</code></h3>
+      <p>
+        Remove children nodes from a parent node. Useful for nodes whose content
+        is populated by <code>fetch()</code> results. A callback can be called
+        at the end of this event if needed.
+      </p>
+      <pre><code class="language-javascript"><div><span >const</span> empty = <span >(<span >parent, callback</span>) =&gt;</span> {
 <span >while</span> (parent.lastChild) {
   parent.removeChild(parent.lastChild)
 }
@@ -205,6 +221,9 @@ nodes.forEach(<span >(<span >n</span>) =&gt;</span> {
 }
 }
 </div></code></pre>
+    </div>
+  </section>
+    <section>
     <h2 id="animation-helpers">Animation Helpers</h2>
     <p>These were inspired by my experience with the Svelte framework.</p>
     <p>
@@ -305,6 +324,7 @@ nodes.forEach(<span >(<span >n</span>) =&gt;</span> {
     <p>
       <img src="/assets/flip.gif" alt="flip demo" title="Flip Demo" />
     </p>
+ 
     <h3 id="-known-issues-">🕷 Known Issues 🕷</h3>
     <ul>
       <li>
