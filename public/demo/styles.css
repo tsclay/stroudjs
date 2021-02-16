@@ -23,8 +23,8 @@ a {
 }
 
 .box {
-  height: 400px;
-  width: 400px;
+  height: 310px;
+  width: 80%;
   background: black;
   margin-bottom: 2rem;
   padding: 1rem;
