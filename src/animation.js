@@ -141,7 +141,7 @@ function unshiftSiblings(node, params) {
   if (!next) return
 
   const stack = [...node.parentElement.children]
-  console.log(stack)
+  // console.log(stack)
   let offset = 0
 
   const { duration = 300, delay = 0, easing = linear } = params
@@ -250,16 +250,14 @@ function flip(target, flag, node, callback) {
   node.dataset.animation = 'flip'
   unshiftSiblings(node, { duration: 300, delay: 0, easing: linear })
   if (flag === 'append') {
-    console.log('append')
     target.appendChild(node)
   } else if (flag === 'prepend') {
     target.prepend(node)
-    console.log('prepend')
   }
 
   const rB = node.getBoundingClientRect()
 
-  console.log(rA.left - rB.left, rA.top - rB.top)
+  // console.log(rA.left - rB.left, rA.top - rB.top)
 
   transition('flip', node, {
     duration: 300,
