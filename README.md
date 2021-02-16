@@ -1,6 +1,8 @@
 # stroudjs
 
-A slim library of helper functions for use in vanilla JS projects
+A slim library of helper functions for use in vanilla JS projects.
+
+For those moments you want jQuery, but don't need all of it (this doesn't use jQuery-like things).
 
 ## DOM Helpers
 
@@ -8,7 +10,7 @@ A slim library of helper functions for use in vanilla JS projects
 
 Writing ```document.querySelector()``` or ```document.getElementById()``` grows tedious.
 
-```javascript
+```language-javascript
 const searchForOne = (string) => document.querySelector(string)
 const searchForAll = (string) => document.querySelectorAll(string)
 ```
@@ -20,7 +22,7 @@ const searchForAll = (string) => document.querySelectorAll(string)
   - `{class: 'foo', "data-id": 'bar'}`
 - `innerText` - The innerText to set on the element
 
-```javascript
+```language-javascript
 const createElement = (tag, attributes = null, innerText = null) => {
   const element = document.createElement(tag)
   if (attributes) {
@@ -30,14 +32,16 @@ const createElement = (tag, attributes = null, innerText = null) => {
       element.setAttribute(`${key}`, value)
     })
   }
-  if (typeof innerText === 'string') element.innerText = innerText
+  if (typeof innerText === 'string') {
+    element.innerText = innerText
+  }
   return element
 }
 ```
 
-An example, if you're familiar with ExtJs then this may look familiar:
+If you're familiar with [ExtJs](https://docs.sencha.com/extjs/6.2.0/index.html) then this may look somewhat familiar:
 
-```javascript
+```language-javascript
  const childDiv = createElement(
       'div',
       {
@@ -57,7 +61,7 @@ attributes.attributeName - The element attribute you wish to set and its value
 - `viewBox` - Array containing width and height as integers to set for the viewbox
 - `dimensions` - Set a width and height different from viewBox if needed. Can be numbers or strings representing a percentage. If not provided, ```viewBox``` array is used
 
-```javascript
+```language-javascript
 const createSVG = (tag, attributes, viewBox, dimensions) => {
   const xmlns = 'http://www.w3.org/2000/svg'
   const svgElement = document.createElementNS(xmlns, tag)
@@ -91,7 +95,7 @@ Append elements to a given parent element.
 - `parent` - The parent node to which children will be appended
 - `children` - Array of children elements that will go inside ```parent```
   
-```javascript
+```language-javascript
 const nestElements = (parent, children) => {
   children.forEach((c) => {
     parent.appendChild(c)
@@ -107,7 +111,7 @@ Iteratively remove nodes from the DOM.
 - `nodes` - Array of nodes to remove from the DOM.
 - `callback` - Optional callback to perform when done
 
-```javascript
+```language-javascript
 const removeNodes = (nodes, callback) => {
   nodes.forEach((n) => {
     n.remove()
@@ -123,12 +127,14 @@ const removeNodes = (nodes, callback) => {
 Remove children nodes from a parent node. Useful for nodes whose content is populated by ```fetch()``` results.
 A callback can be called at the end of this event if needed.
 
-```javascript
+```language-javascript
 const empty = (parent, callback) => {
   while (parent.lastChild) {
     parent.removeChild(parent.lastChild)
   }
-  if (typeof callback === 'function') callback()
+  if (typeof callback === 'function') {
+    callback()
+  }
 }
 ```
 
@@ -136,7 +142,7 @@ const empty = (parent, callback) => {
 
 These were inspired by my experience with the Svelte framework. 
 
-Refer to [this talk](https://www.youtube.com/watch?v=FxMyqxc8Fx0) from Svelte Summit 2020 for how Svelte handles animation. The presenter Tan Li Hau demonstrates how one would write something like Svelte's transition function using vanilla Javascript.
+Refer to [this talk](https://www.youtube.com/watch?v=FxMyqxc8Fx0) from Svelte Summit 2020 for how Svelte handles animation. The presenter Tan Li Hau demonstrates how one would write something like Svelte's transition function using vanilla language-javascript.
 
 ### `transition()`
 
@@ -148,7 +154,7 @@ Give appended/prepended nodes a smooth entrance and give them a smooth exit.
 
 `params` is based on Svelte's "transition contract. The default params look like this:
 
-```javascript
+```language-javascript
 params = {
   duration: 300,
   delay: 0,
@@ -171,7 +177,7 @@ If the transitioning node has siblings, those siblings are animated such that th
 
 ![Dynamic animation](assets/dynamic-shift.gif "Dynamic Adjusting")
 
-#### ⚠️ Caveat ⚠️
+### ⚠️ Caveat ⚠️
 
 If your outgoing transition's duration is set to >= 1000, then too many simultaneously-exiting nodes will cause shifting nodes to not complete their animations.
 
