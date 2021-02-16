@@ -1,6 +1,6 @@
 # stroudjs
 
-A slim library of helper functions for use in vanilla JS projects.
+A slim library of helper functions for use in vanilla JS projects (ES6+).
 
 For those moments you want jQuery, but don't need all of it (this doesn't use jQuery-like things).
 
