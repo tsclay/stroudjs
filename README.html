@@ -1,0 +1,329 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>stroudjs</title>
+    <style></style>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css"
+      integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-twilight.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI",
+          system-ui, "Ubuntu", "Droid Sans", sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+        background: #2d2d2d;
+        color: white;
+      }
+    </style>
+    <style>
+      .task-list-item {
+        list-style-type: none;
+      }
+      .task-list-item-checkbox {
+        margin-left: -20px;
+        vertical-align: middle;
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+  </head>
+  <body class="vscode-body vscode-dark">
+    <h1 id="stroudjs">stroudjs</h1>
+    <p>A slim library of helper functions for use in vanilla JS projects.</p>
+    <p>
+      For those moments you want jQuery, but don't need all of it (this doesn't
+      use jQuery-like things).
+    </p>
+    <h2 id="dom-helpers">DOM Helpers</h2>
+    <h3 id="searchforone-and-searchforall">
+      <code>searchForOne()</code> and <code>searchForAll()</code>
+    </h3>
+    <p>
+      Writing <code>document.querySelector()</code> or
+      <code>document.getElementById()</code> grows tedious.
+    </p>
+    <pre><code class="language-javascript"><div><span >const</span> searchForOne = <span >(<span >string</span>) =&gt;</span> <span >document</span>.querySelector(string)
+<span >const</span> searchForAll = <span >(<span >string</span>) =&gt;</span> <span >document</span>.querySelectorAll(string)
+</div></code></pre>
+    <h3 id="createelement"><code>createElement()</code></h3>
+    <ul>
+      <li><code>element</code> - The element to create</li>
+      <li>
+        <code>attributes</code> - Object containing attributes to set:
+        <code>element.setAttribute(key, value)</code>
+        <ul>
+          <li><code>{class: 'foo', "data-id": 'bar'}</code></li>
+        </ul>
+      </li>
+      <li><code>innerText</code> - The innerText to set on the element</li>
+    </ul>
+    <pre><code class="language-javascript"><div><span >const</span> createElement = <span >(<span >tag, attributes = <span >null</span>, innerText = <span >null</span></span>) =&gt;</span> {
+<span >const</span> element = <span >document</span>.createElement(tag)
+<span >if</span> (attributes) {
+  <span >const</span> valuePairs = <span >Object</span>.entries(attributes)
+  valuePairs.forEach(<span >(<span >a</span>) =&gt;</span> {
+    <span >const</span> [key, value] = a
+    element.setAttribute(<span >`<span >${key}</span>`</span>, value)
+  })
+}
+<span >if</span> (<span >typeof</span> innerText === <span >'string'</span>) {
+  element.innerText = innerText
+}
+<span >return</span> element
+}
+</div></code></pre>
+    <p>
+      If you're familiar with
+      <a href="https://docs.sencha.com/extjs/6.2.0/index.html">ExtJs</a> then
+      this may look somewhat familiar:
+    </p>
+    <pre><code class="language-javascript"><div> <span >const</span> childDiv = createElement(
+    <span >'div'</span>,
+    {
+      <span >class</span>: <span >'child'</span>
+    },
+    <span >'Click me to go out!'</span>
+  )
+</div></code></pre>
+    <h3 id="createsvg"><code>createSVG()</code></h3>
+    <p>
+      A wrapper around <code>document.createElementNS()</code> with helpers for
+      setting attributes.
+    </p>
+    <ul>
+      <li>
+        <code>tag</code> - The SVG element to create, such as 'svg', 'path',
+        'g', so on
+      </li>
+      <li>
+        <code>attributes</code> - (Optional) Object containing attributes to
+        set:
+        <code>element.setAttribute(key, value)</code> attributes.attributeName -
+        The element attribute you wish to set and its value
+      </li>
+      <li>
+        <code>viewBox</code> - Array containing width and height as integers to
+        set for the viewbox
+      </li>
+      <li>
+        <code>dimensions</code> - Set a width and height different from viewBox
+        if needed. Can be numbers or strings representing a percentage. If not
+        provided, <code>viewBox</code> array is used
+      </li>
+    </ul>
+    <pre><code class="language-javascript"><div><span >const</span> createSVG = <span >(<span >tag, attributes, viewBox, dimensions</span>) =&gt;</span> {
+<span >const</span> xmlns = <span >'http://www.w3.org/2000/svg'</span>
+<span >const</span> svgElement = <span >document</span>.createElementNS(xmlns, tag)
+<span >if</span> (tag === <span >'svg'</span>) {
+  <span >const</span> [width, height] = viewBox
+  svgElement.setAttribute(<span >'viewBox'</span>, <span >`0 0 <span >${width}</span> <span >${height}</span>`</span>)
+  <span >if</span> (dimensions) {
+    <span >const</span> [diffWidth, diffHeight] = dimensions
+    svgElement.setAttribute(<span >'width'</span>, diffWidth)
+    svgElement.setAttribute(<span >'height'</span>, diffHeight)
+  } <span >else</span> {
+    svgElement.setAttribute(<span >'width'</span>, width)
+    svgElement.setAttribute(<span >'height'</span>, height)
+  }
+}
+<span >if</span> (attributes) {
+  <span >const</span> valuePairs = <span >Object</span>.entries(attributes)
+  valuePairs.forEach(<span >(<span >a</span>) =&gt;</span> {
+    <span >const</span> [key, value] = a
+    svgElement.setAttribute(<span >`<span >${key}</span>`</span>, value)
+  })
+}
+<span >return</span> svgElement
+}
+</div></code></pre>
+    <h3 id="nestelements"><code>nestElements()</code></h3>
+    <p>Append elements to a given parent element.</p>
+    <ul>
+      <li>
+        <code>parent</code> - The parent node to which children will be appended
+      </li>
+      <li>
+        <code>children</code> - Array of children elements that will go inside
+        <code>parent</code>
+      </li>
+    </ul>
+    <pre><code class="language-javascript"><div><span >const</span> nestElements = <span >(<span >parent, children</span>) =&gt;</span> {
+children.forEach(<span >(<span >c</span>) =&gt;</span> {
+  parent.appendChild(c)
+})
+<span >return</span> parent
+}
+</div></code></pre>
+    <h3 id="removenodes"><code>removeNodes()</code></h3>
+    <p>Iteratively remove nodes from the DOM.</p>
+    <ul>
+      <li><code>nodes</code> - Array of nodes to remove from the DOM.</li>
+      <li><code>callback</code> - Optional callback to perform when done</li>
+    </ul>
+    <pre><code class="language-javascript"><div><span >const</span> removeNodes = <span >(<span >nodes, callback</span>) =&gt;</span> {
+nodes.forEach(<span >(<span >n</span>) =&gt;</span> {
+  n.remove()
+})
+<span >if</span> (<span >typeof</span> callback === <span >'function'</span>) {
+  callback()
+}
+}
+</div></code></pre>
+    <h3 id="empty"><code>empty()</code></h3>
+    <p>
+      Remove children nodes from a parent node. Useful for nodes whose content
+      is populated by <code>fetch()</code> results. A callback can be called at
+      the end of this event if needed.
+    </p>
+    <pre><code class="language-javascript"><div><span >const</span> empty = <span >(<span >parent, callback</span>) =&gt;</span> {
+<span >while</span> (parent.lastChild) {
+  parent.removeChild(parent.lastChild)
+}
+<span >if</span> (<span >typeof</span> callback === <span >'function'</span>) {
+  callback()
+}
+}
+</div></code></pre>
+    <h2 id="animation-helpers">Animation Helpers</h2>
+    <p>These were inspired by my experience with the Svelte framework.</p>
+    <p>
+      Refer to
+      <a href="https://www.youtube.com/watch?v=FxMyqxc8Fx0">this talk</a> from
+      Svelte Summit 2020 for how Svelte handles animation. The presenter Tan Li
+      Hau demonstrates how one would write something like Svelte's transition
+      function using vanilla language-javascript.
+    </p>
+    <h3 id="transition"><code>transition()</code></h3>
+    <p>
+      Give appended/prepended nodes a smooth entrance and give them a smooth
+      exit.
+    </p>
+    <ul>
+      <li>
+        <code>flag</code> - Assign 'in' or 'out' depending on whether your
+        element is entering or exiting the DOM
+      </li>
+      <li>
+        <code>node</code> - The element that is entering or exiting the DOM
+      </li>
+      <li>
+        <code>params</code> - The parameters object for the CSS or JS animation
+      </li>
+    </ul>
+    <p>
+      <code>params</code> is based on Svelte's "transition contract. The default
+      params look like this:
+    </p>
+    <pre><code class="language-javascript"><div>params = {
+<span >duration</span>: <span >300</span>,
+<span >delay</span>: <span >0</span>,
+<span >easing</span>: linear,
+<span >css</span>: <span >(<span >t, u</span>) =&gt;</span> <span >`transform: translate(-<span >${t * <span >50</span>}</span>px, <span >${t * <span >50</span>}</span>px)`</span>,
+<span >tick</span>: <span >(<span >t, u</span>) =&gt;</span> (t === <span >1</span> ? (node.style.animation = <span >''</span>) : <span >''</span>)
+}
+</div></code></pre>
+    <p>
+      Refer to <code>easings.js</code> for the easing functions. These take the
+      place of writing <code>cubic-bezier()</code> in a CSS file.
+    </p>
+    <p>
+      The transition function creates keyframes for the transition animation,
+      adds them to a style sheet, and runs the animation. Both CSS and JS
+      animations are possible with this function.
+    </p>
+    <p>
+      <img
+        src="/assets/transition.gif"
+        alt="transition demo"
+        title="Transition Demo"
+      />
+    </p>
+    <p>
+      If the transitioning node has siblings, those siblings are animated such
+      that they smoothly fill in empty space left by the removed nodes and they
+      smoothly make space for prepended nodes.
+    </p>
+    <p>
+      <em
+        >The neighboring nodes will take on the parameters given to the outgoing
+        element.</em
+      >
+      So, if an outgoing element's <code>params</code> argument includes
+      <code>{duration: 1000, delay: 100, ...}</code> then the neighboring nodes
+      will receive the same.
+    </p>
+    <p>
+      <img
+        src="/assets/dynamic-shift.gif"
+        alt="Dynamic animation"
+        title="Dynamic Adjusting"
+      />
+    </p>
+    <h3 id="️caveat">⚠️ Caveat ⚠️</h3>
+    <p>
+      If your outgoing transition's duration is set to &gt;= 1000, then too many
+      simultaneously-exiting nodes will cause shifting nodes to not complete
+      their animations.
+    </p>
+    <p>
+      <img src="/assets/bug.gif" alt="Bug" title="Bug with too many exiters" />
+    </p>
+    <h3 id="flip"><code>flip()</code></h3>
+    <p>
+      The flip function allows one to have a node transition out from one
+      element and transition into another one.
+    </p>
+    <p>
+      <code>target</code> - The parent node taking in the new element
+      <code>flag</code> - Either 'append', which will call
+      <code>target.appendChild(node)</code> or 'prepend' which calls
+      <code>target.prepend(node)</code> node The node being moved to
+      <code>target</code> <code>callback</code> - Execute code when flip has
+      completed
+    </p>
+    <p>
+      <img src="/assets/flip.gif" alt="flip demo" title="Flip Demo" />
+    </p>
+    <h3 id="-known-issues-">🕷 Known Issues 🕷</h3>
+    <ul>
+      <li>
+        <code>animation.js</code>: Inability to customize the
+        <code>params</code> argument for neighboring nodes
+        <ul>
+          <li>
+            May cause negative side effects in certain cases, but will need
+            testing
+          </li>
+        </ul>
+      </li>
+      <li>
+        <code>animation.js</code>: Using <code>flip()</code> seems to not work
+        well with <code>unshiftSiblings()</code> as animations seem to end
+        prematurely if there are multiple nodes flipping
+      </li>
+      <li>
+        Animations don't play and end consistently across browsers. Brave
+        glitches the animations at their ends. However, the major players seem
+        to render well (Firefox, Safari, Chrome).
+      </li>
+    </ul>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/prism.min.js"></script>
+  </body>
+</html>
