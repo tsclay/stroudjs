@@ -1,0 +1,38 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI",
+    system-ui, "Ubuntu", "Droid Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  background: #2d2d2d;
+  color: white;
+}
+
+a {
+  color: rgb(95, 214, 250);
+}
+
+#workspace {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.left-btn-group,
+.right-btn-group {
+  margin-bottom: 2rem;
+}
+
+.box {
+  height: 400px;
+  width: 400px;
+  background: black;
+  margin-bottom: 2rem;
+  padding: 1rem;
+}
+
+.child {
+  display: inline-block;
+  margin: 0 0.5rem 0.5rem 0;
+  height: 100px;
+  width: 100px;
+}
