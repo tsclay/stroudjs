@@ -5,18 +5,18 @@
 /**
  * A wrapper around ```document.querySelector()```
  *
- * @param {String} element - The element to create
- * @returns {HTMLElement} The NodeList (array-like object) containing the elements that match the given query
+ * @param {String} queryString - The element to find, using CSS selector
+ * @returns {HTMLElement|null} The NodeList (array-like object) containing the elements that match the given query or null if not found
  */
-const searchForOne = (string) => document.querySelector(string)
+const searchForOne = (queryString) => document.querySelector(queryString)
 
 /**
  * A wrapper around ```document.querySelectorAll()```
  *
- * @param {String} element - The element to create
- * @returns {NodeList} The HTMLElementCollection returned from ```document.querySelectorAll()```
+ * @param {String} element - The element to find, using CSS selector
+ * @returns {NodeList|null} The HTMLElementCollection returned from ```document.querySelectorAll()``` or null if not found
  */
-const searchForAll = (string) => document.querySelectorAll(string)
+const searchForAll = (queryString) => document.querySelectorAll(queryString)
 
 //= ==========================================================
 // Element Composition
@@ -25,13 +25,14 @@ const searchForAll = (string) => document.querySelectorAll(string)
 /**
  * A wrapper around ```document.createElement()``` with helpers for setting attributes and innerText
  *
- * @param {String} element - The element to create
+ * @param {String} tagName - The tag name for the element to create
  * @param {Object} [attributes] - (Optional) Object containing attributes to set: ```element.setAttribute(key, value)```
  * @param {String|Number} attributes.attributeName - The element attribute you wish to set and its value
  * @param {String} [innerText] - (Optional) The innerText to set on the element
+ * @returns {HTMLElement} The new element
  */
-const createElement = (tag, attributes = null, innerText = null) => {
-  const element = document.createElement(tag)
+const createElement = (tagName, attributes = null, innerText = null) => {
+  const element = document.createElement(tagName)
   if (attributes) {
     const valuePairs = Object.entries(attributes)
     valuePairs.forEach((a) => {
@@ -46,16 +47,17 @@ const createElement = (tag, attributes = null, innerText = null) => {
 /**
  * Create SVG elements. A wrapper around ```document.createElementNS()``` with helpers for setting attributes.
  *
- * @param {String} tag - The SVG element to create, such as 'svg', 'path', 'g', so on
+ * @param {String} tagName - The SVG element's tag name to create, such as 'svg', 'path', 'g', so on
  * @param {Object} [attributes] - (Optional) Object containing attributes to set: ```element.setAttribute(key, value)```
  * @param {String|Number} attributes.attributeName - The element attribute you wish to set and its value
  * @param {Number[]} viewBox - [viewBoxWidth, viewBoxHeight] to set the viewbox
  * @param {Array} [dimensions] - Set a width and height different from viewBox if needed. Can be numbers or strings representing a percentage. If not provided, ```viewBox``` array is used
+ * @returns {SVGElement} The new SVG element
  */
-const createSVG = (tag, attributes, viewBox, dimensions) => {
+const createSVG = (tagName, attributes, viewBox, dimensions) => {
   const xmlns = 'http://www.w3.org/2000/svg'
-  const svgElement = document.createElementNS(xmlns, tag)
-  if (tag === 'svg') {
+  const svgElement = document.createElementNS(xmlns, tagName)
+  if (tagName === 'svg') {
     const [width, height] = viewBox
     svgElement.setAttribute('viewBox', `0 0 ${width} ${height}`)
     if (dimensions) {
@@ -155,3 +157,5 @@ const empty = (parent, callback) => {
   }
   if (typeof callback === 'function') callback()
 }
+
+
