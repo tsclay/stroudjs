@@ -2,12 +2,13 @@
 /* eslint-disable no-self-assign */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
+import {TransitionContract, ShiftingParams} from './interfaces/animation.interfaces'
 //= ==========================================================
 // Utilities
 //= ==========================================================
 
 // https://github.com/darkskyapp/string-hash/blob/master/index.js
-const hash = (str) => {
+const hash = (str: string) => {
   let hash = 5381
   let i = str.length
 
@@ -30,6 +31,11 @@ const registeredRules = new Set()
 
 let i = 0
 
+interface AnimatingNode extends HTMLElement {
+  formerPos?: DOMRect;
+  formerPosition?: DOMRect;
+}
+
 /**
  *
  * @param {String} flag Assign 'in' or 'out' depending on whether your element is entering or exiting the DOM
@@ -42,9 +48,9 @@ let i = 0
  * @param {Function} params.tick The function that performs a transformation on the node using JS on every ```requestAnimationFrame```
  */
 function transition(
-  flag,
-  node,
-  params = {
+  flag: string,
+  node: AnimatingNode,
+  params: TransitionContract = {
     duration: 300,
     delay: 0,
     easing: linear,
@@ -135,12 +141,16 @@ function transition(
   requestAnimationFrame(loop)
 }
 
-function unshiftSiblings(node, params) {
+interface SpecialNode extends HTMLElement {
+  formerPosition: number | DOMRect
+}
+
+function unshiftSiblings(node: AnimatingNode, params: ShiftingParams) {
   const next = node.nextElementSibling ? node.nextElementSibling : null
 
   if (!next) return
 
-  const stack = [...node.parentElement.children]
+  const stack: AnimatingNode[] = [...node.parentElement.children]
   // console.log(stack)
   let offset = 0
 
@@ -194,7 +204,7 @@ function unshiftSiblings(node, params) {
   }
 }
 
-function pushSiblings(node, params) {
+function pushSiblings(node: HTMLElement, params: ShiftingParams) {
   let next = node.nextElementSibling ? node.nextElementSibling : null
 
   if (!next) return
@@ -244,7 +254,7 @@ function pushSiblings(node, params) {
  * @param {HTMLElement} node The node being moved to ```target```
  * @param {Function} [callback] Execute code when flip has completed
  */
-function flip(target, flag, node, callback) {
+function flip(target: HTMLElement, flag: string, node: HTMLElement, callback: () => any) {
   const rA = node.getBoundingClientRect()
   node.formerPosition = rA
   node.dataset.animation = 'flip'
