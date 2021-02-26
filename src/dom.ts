@@ -18,7 +18,7 @@ const searchForOne = (query: string): HTMLElement | null => document.querySelect
  * @param {String} query - The element to find, using CSS selector
  * @returns {NodeList|null} The HTMLElementCollection returned from ```document.querySelectorAll()``` or null if not found
  */
-const searchForAll = (query: string): NodeList | null => document.querySelectorAll(query)
+const searchForAll = (query: string): NodeListOf<Element> | null => document.querySelectorAll(query)
 
 //= ==========================================================
 // Element Composition
