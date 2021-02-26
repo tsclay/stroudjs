@@ -2,7 +2,7 @@
 /* eslint-disable no-self-assign */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
-import {TransitionContract, ShiftingParams} from './interfaces/animation.interfaces'
+import {TransitionContract, ShiftingParams, Stack, AnimatingChildNode, AnimatingNode} from './interfaces/animation.interfaces'
 //= ==========================================================
 // Utilities
 //= ==========================================================
@@ -31,10 +31,7 @@ const registeredRules = new Set()
 
 let i = 0
 
-interface AnimatingNode extends HTMLElement {
-  formerPos?: DOMRect;
-  formerPosition?: DOMRect;
-}
+
 
 /**
  *
@@ -141,16 +138,12 @@ function transition(
   requestAnimationFrame(loop)
 }
 
-interface SpecialNode extends HTMLElement {
-  formerPosition: number | DOMRect
-}
-
 function unshiftSiblings(node: AnimatingNode, params: ShiftingParams) {
   const next = node.nextElementSibling ? node.nextElementSibling : null
 
   if (!next) return
 
-  const stack: AnimatingNode[] = [...node.parentElement.children]
+  const stack: AnimatingChildNode[] = [...node.parentElement.children]
   // console.log(stack)
   let offset = 0
 
@@ -204,12 +197,14 @@ function unshiftSiblings(node: AnimatingNode, params: ShiftingParams) {
   }
 }
 
+
+
 function pushSiblings(node: HTMLElement, params: ShiftingParams) {
   let next = node.nextElementSibling ? node.nextElementSibling : null
 
   if (!next) return
 
-  const stack = []
+  const stack: Stack = []
   const { duration = 300, delay = 0, easing = linear } = params
 
   while (next) {
