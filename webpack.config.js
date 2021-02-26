@@ -1,6 +1,7 @@
 const path = require('path')
 
 module.exports = {
+  mode: 'development',
   entry: ['./src/animation.ts', './src/dom.ts', './src/easings.js'],
   module: {
     rules: [
