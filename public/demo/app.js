@@ -1,3 +1,19 @@
+const {
+  searchForOne,
+  searchForAll,
+  createElement,
+  createSVG,
+  nestElements,
+  fragmentElements,
+  removeNodes,
+  empty,
+  transition,
+  flip,
+  easings
+} = stroud
+
+const { linear, circIn } = easings
+
 const resetChildren = () => {
   removeNodes(searchForAll('.child'), () => {})
   while (active.sheet.cssRules.length > 0) {
