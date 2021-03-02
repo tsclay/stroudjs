@@ -1,7 +1,7 @@
 export interface TransitionContract {
   duration: number;
   delay: number;
-  easing: () => any;
+  easing: (t?: number) => any;
   css: (t: number, u: number) => any,
   tick?: (t: number, u: number) => any
 }
@@ -13,8 +13,9 @@ export interface ShiftingParams {
 } 
 
 export interface AnimatingChildNode extends Element {
+  onanimationend?: () => void;
   formerPos?: DOMRect;
-  formerPosition?: DOMRect;
+  formerPosition?: DOMRect | null;
   getBoundingClientRect: () => DOMRect;
   style?: ElementCSSInlineStyle["style"];
   dataset?: HTMLOrSVGElement["dataset"]

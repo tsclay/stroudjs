@@ -10,7 +10,7 @@ import {NodeAttributes} from './interfaces/dom.interfaces'
  * @param {String} query - The element to find, using CSS selector
  * @returns {HTMLElement|null} The NodeList (array-like object) containing the elements that match the given query or null if not found
  */
-const searchForOne = (query: string): HTMLElement | null => document.querySelector(query)
+export const searchForOne = (query: string): HTMLElement | null => document.querySelector(query)
 
 /**
  * A wrapper around ```document.querySelectorAll()```
@@ -18,7 +18,7 @@ const searchForOne = (query: string): HTMLElement | null => document.querySelect
  * @param {String} query - The element to find, using CSS selector
  * @returns {NodeList|null} The HTMLElementCollection returned from ```document.querySelectorAll()``` or null if not found
  */
-const searchForAll = (query: string): NodeListOf<Element> | null => document.querySelectorAll(query)
+export const searchForAll = (query: string): NodeListOf<Element> | null => document.querySelectorAll(query)
 
 //= ==========================================================
 // Element Composition
@@ -33,7 +33,7 @@ const searchForAll = (query: string): NodeListOf<Element> | null => document.que
  * @param {String} [innerText] - (Optional) The innerText to set on the element
  * @returns {HTMLElement} The new element
  */
-const createElement = (tagName:string, attributes?: NodeAttributes, innerText?: string): HTMLElement => {
+export const createElement = (tagName:string, attributes?: NodeAttributes, innerText?: string): HTMLElement => {
   const element = document.createElement(tagName)
   if (attributes) {
     const valuePairs = Object.entries(attributes)
@@ -55,7 +55,7 @@ const createElement = (tagName:string, attributes?: NodeAttributes, innerText?: 
  * @param {Array} [dimensions] - Set a width and height different from viewBox if needed. Can be numbers or strings representing a percentage. If not provided, ```viewBox``` array is used
  * @returns {SVGElement} The new SVG element
  */
-const createSVG = (tagName:string, viewBox: [number, number], attributes?: NodeAttributes, dimensions?: [number, number]): SVGElement => {
+export const createSVG = (tagName:string, viewBox: [number, number], attributes?: NodeAttributes, dimensions?: [number, number]): SVGElement => {
   const xmlns = 'http://www.w3.org/2000/svg'
   const svgElement = document.createElementNS(xmlns, tagName)
   if (tagName === 'svg') {
@@ -91,7 +91,7 @@ const createSVG = (tagName:string, viewBox: [number, number], attributes?: NodeA
  * @param {HTMLElement[]} siblings - List of the Element objects that will go inside ```DocumentFragment```
  * @returns {DocumentFragment} The document fragment with children
  */
-const fragmentElements = (siblings: HTMLElement[]): DocumentFragment => {
+export const fragmentElements = (siblings: HTMLElement[]): DocumentFragment => {
   const frag = document.createDocumentFragment()
   siblings.forEach((s) => {
     frag.appendChild(s)
@@ -106,7 +106,7 @@ const fragmentElements = (siblings: HTMLElement[]): DocumentFragment => {
  * @param {HTMLElement[]} children - List children elements that will go inside ```parent```. Appended in ascending order, so first in list will be ```parent.firstChild```
  * @returns {HTMLElement} Parent with children appended
  */
-const nestElements = (parent: HTMLElement, children: HTMLElement[]): HTMLElement => {
+export const nestElements = (parent: HTMLElement, children: HTMLElement[]): HTMLElement => {
   children.forEach((c) => {
     parent.appendChild(c)
   })
@@ -130,7 +130,7 @@ const nestElements = (parent: HTMLElement, children: HTMLElement[]): HTMLElement
  * @param {HTMLElement[]} nodes - List of nodes to remove from the DOM.
  * @param {callback} [callback] - (Optional) Callback to run after nodes are removed
  */
-const removeNodes = (nodes: HTMLElement[], callback?: () => any) => {
+export const removeNodes = (nodes: HTMLElement[], callback?: () => any) => {
   nodes.forEach((n) => {
     n.remove()
   })
@@ -152,7 +152,7 @@ const removeNodes = (nodes: HTMLElement[], callback?: () => any) => {
  * @param {HTMLElement} parent - Element to empty
  * @param {callback} [callback] - (Optional) Callback to execute upon completion
  */
-const empty = (parent: HTMLElement, callback?: () => any) => {
+export const empty = (parent: HTMLElement, callback?: () => any) => {
   while (parent.lastChild) {
     parent.removeChild(parent.lastChild)
   }
