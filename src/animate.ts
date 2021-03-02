@@ -2,6 +2,7 @@
 /* eslint-disable no-self-assign */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
+import { linear } from './easings'
 import {TransitionContract, ShiftingParams, Stack, AnimatingChildNode, AnimatingNode} from './interfaces/animation.interfaces'
 //= ==========================================================
 // Utilities
@@ -44,9 +45,9 @@ let i = 0
  * @param {Function} params.css The CSS function that returns a string representing the CSS for the animation
  * @param {Function} params.tick The function that performs a transformation on the node using JS on every ```requestAnimationFrame```
  */
-function transition(
+export function transition(
   flag: string,
-  node: AnimatingNode,
+  node: AnimatingChildNode,
   params: TransitionContract = {
     duration: 300,
     delay: 0,
@@ -138,12 +139,12 @@ function transition(
   requestAnimationFrame(loop)
 }
 
-function unshiftSiblings(node: AnimatingNode, params: ShiftingParams) {
+export function unshiftSiblings(node: AnimatingChildNode, params: ShiftingParams) {
   const next = node.nextElementSibling ? node.nextElementSibling : null
 
   if (!next) return
 
-  const stack: AnimatingChildNode[] = [...node.parentElement.children]
+  const stack: Stack = [...node.parentElement.children]
   // console.log(stack)
   let offset = 0
 
@@ -181,7 +182,9 @@ function unshiftSiblings(node: AnimatingNode, params: ShiftingParams) {
     const style = getComputedStyle(stack[j])
     const transform = style.transform === 'none' ? '' : style.transform
 
-    transition('fill', stack[j], {
+    let currentNode = stack[j]
+
+    transition('fill', currentNode, {
       duration,
       delay,
       easing,
@@ -190,7 +193,7 @@ function unshiftSiblings(node: AnimatingNode, params: ShiftingParams) {
       },
       tick: (t, u) => {
         if (t === 1) {
-          stack[j].formerPosition = ''
+          stack[j].formerPosition = null
         }
       }
     })
@@ -199,7 +202,7 @@ function unshiftSiblings(node: AnimatingNode, params: ShiftingParams) {
 
 
 
-function pushSiblings(node: HTMLElement, params: ShiftingParams) {
+export function pushSiblings(node: AnimatingChildNode, params: ShiftingParams) {
   let next = node.nextElementSibling ? node.nextElementSibling : null
 
   if (!next) return
@@ -249,7 +252,7 @@ function pushSiblings(node: HTMLElement, params: ShiftingParams) {
  * @param {HTMLElement} node The node being moved to ```target```
  * @param {Function} [callback] Execute code when flip has completed
  */
-function flip(target: HTMLElement, flag: string, node: HTMLElement, callback: () => any) {
+export function flip(target: HTMLElement, flag: string, node: AnimatingChildNode, callback: () => any) {
   const rA = node.getBoundingClientRect()
   node.formerPosition = rA
   node.dataset.animation = 'flip'
@@ -276,7 +279,7 @@ function flip(target: HTMLElement, flag: string, node: HTMLElement, callback: ()
     tick: (t, u) => {
       if (t === 1) {
         node.dataset.animation = ''
-        node.formerPosition = ''
+        node.formerPosition = null
       }
       if (t === 1 && callback) {
         callback()
