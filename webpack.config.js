@@ -1,22 +1,31 @@
 const path = require('path')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = {
-  mode: 'development',
-  entry: ['./src/animation.ts', './src/dom.ts', './src/easings.js'],
+  entry: {
+    main: './src/main.ts',
+    dom: './src/dom.ts',
+    animate: './src/animate.ts',
+    easings: './src/easings.js'
+  },
+  plugins: [new CleanWebpackPlugin()],
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.ts$/,
         use: 'ts-loader',
         exclude: /node_modules/
       }
     ]
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.ts', '.js']
   },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    publicPath: './dist',
+    filename: 'stroud.[name].js',
+    path: path.resolve(__dirname, 'dist'),
+    library: 'stroud',
+    libraryTarget: 'umd'
   }
 }
