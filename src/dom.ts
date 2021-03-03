@@ -36,11 +36,13 @@ export const searchForAll = (query: string): NodeListOf<Element> | null => docum
 export const createElement = (tagName:string, attributes?: NodeAttributes, innerText?: string): HTMLElement => {
   const element = document.createElement(tagName)
   if (attributes) {
-    const valuePairs = Object.entries(attributes)
-    valuePairs.forEach((a) => {
+    Object.entries(attributes).forEach((a) => {
       const [key, value] = a
       element.setAttribute(`${key}`, typeof value == 'number' ? `${value}` : value)
     })
+  }
+  if (innerText) {
+    element.innerText = innerText
   }
   return element
 }

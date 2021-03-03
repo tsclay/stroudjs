@@ -25,14 +25,30 @@ const hash = (str: string) => {
 // Transition
 //= ==========================================================
 
-const active = document.createElement('style')
-document.head.appendChild(active)
+// const STROUD_STYLES = document.createElement('style')
+// STROUD_STYLES.setAttribute('id', 'stroud-animations')
+// document.head.appendChild(STROUD_STYLES)
 
-const registeredRules = new Set()
+export const STROUD_REGISTERED_RULES = new Set()
 
-let i = 0
+export let STROUD_ANIMATION_COUNTER = 0
+export let STROUD_STYLES: HTMLStyleElement
 
+function setupStroudStyles(): HTMLStyleElement {
+  STROUD_STYLES = document.createElement('style')
+  STROUD_STYLES.setAttribute('id', 'stroud-animations')
+  document.head.appendChild(STROUD_STYLES)
 
+  return STROUD_STYLES
+}
+
+export function resetStroudStyles(): HTMLStyleElement {
+  while (STROUD_STYLES.sheet.cssRules.length > 0) {
+    STROUD_STYLES.sheet.deleteRule(STROUD_STYLES.sheet.cssRules.length - 1)
+  }
+  STROUD_REGISTERED_RULES.clear()
+  return STROUD_STYLES
+}
 
 /**
  *
@@ -56,8 +72,11 @@ export function transition(
     tick: (t, u) => (t === 1 ? (node.style.animation = '') : '')
   }
 ) {
+  if (!STROUD_STYLES) {
+    setupStroudStyles()
+  }
   const { duration, delay, easing, css, tick } = params
-  const name = `stroud_${hash(`${(i += 1)}`)}`
+  const name = `stroud_${hash(`${(STROUD_ANIMATION_COUNTER += 1)}`)}`
   const keyframes = Math.ceil(duration / 16.66)
   const style = getComputedStyle(node)
   const transform = style.transform === 'none' ? '' : style.transform
@@ -87,8 +106,8 @@ export function transition(
   }
   `
 
-  active.sheet.insertRule(rules, active.sheet.rules.length)
-  registeredRules.add(name)
+  STROUD_STYLES.sheet.insertRule(rules, STROUD_STYLES.sheet.rules.length)
+  STROUD_REGISTERED_RULES.add(name)
 
   node.style.animation = `${name} ${duration}ms linear ${delay}ms 1 both`
 
@@ -103,8 +122,8 @@ export function transition(
       node.style.left = ''
       node.style.animation = ''
 
-      active.sheet.removeRule(0)
-      registeredRules.clear()
+      STROUD_STYLES.sheet.removeRule(0)
+      STROUD_REGISTERED_RULES.clear()
     }
   } else if (flag === 'fill') {
     node.onanimationend = () => {
@@ -113,8 +132,8 @@ export function transition(
       node.style.top = ''
       node.style.left = ''
 
-      active.sheet.removeRule(0)
-      registeredRules.clear()
+      STROUD_STYLES.sheet.removeRule(0)
+      STROUD_REGISTERED_RULES.clear()
     }
   }
 

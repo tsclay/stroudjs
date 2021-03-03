@@ -1,7 +1,7 @@
 export interface TransitionContract {
   duration: number;
   delay: number;
-  easing: (t?: number) => any;
+  easing: (t?: number) => number;
   css: (t: number, u: number) => any,
   tick?: (t: number, u: number) => any
 }
@@ -9,7 +9,7 @@ export interface TransitionContract {
 export interface ShiftingParams {
   duration: number;
   delay: number;
-  easing: () => any
+  easing: (t?: number) => number
 } 
 
 export interface AnimatingChildNode extends Element {
