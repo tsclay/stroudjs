@@ -9,17 +9,18 @@ const {
   empty,
   transition,
   flip,
-  easings
+  easings,
+  STROUD_REGISTERED_RULES,
+  STROUD_ANIMATION_COUNTER,
+  resetStroudStyles
 } = stroud
 
 const { linear, circIn } = easings
 
 const resetChildren = () => {
-  removeNodes(searchForAll('.child'), () => {})
-  while (active.sheet.cssRules.length > 0) {
-    active.sheet.deleteRule(active.sheet.length - 1)
-  }
-  registeredRules.clear()
+  removeNodes(searchForAll('.child'), () => {
+    resetStroudStyles()
+  })
 }
 
 const handleExit = (e) => {
