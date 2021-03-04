@@ -23,6 +23,18 @@
       href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-twilight.css"
       rel="stylesheet"
     />
+    <script src="/dist/stroud.main.js"></script>
+    <script>
+      const toggleMainSideNav = (e) => {
+        const navBar = e.currentTarget.parentNode
+        navBar.classList.toggle('active')
+        if (navBar.classList.contains('active')) {
+          e.currentTarget.innerText = 'X'
+        } else {
+          e.currentTarget.innerText = '>'
+        }
+      }
+    </script>
     <style>
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI",
@@ -58,10 +70,40 @@
         margin-left: -20px;
         vertical-align: middle;
       }
+      #main-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translate(-90%, 0);
+        height: 100%;
+        width: 365px;
+        background:rgb(172, 172, 172);
+        z-index: 2;
+        transition: 0.3s transform ease-in;
+      }
+      #main-sidebar.active {
+        transform: translate(0,0);
+      }
+      .toggle-nav-btn {
+        position: absolute;
+        right: 2px;
+        top: 2px;
+        width: 30px;
+        height: 30px;
+      }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+    <script src="/dist/stroud.main.js"></script>
   </head>
   <body class="vscode-body vscode-dark">
+    <nav id="main-sidebar">
+      <button class="toggle-nav-btn" onclick="toggleMainSideNav(event)">></button>
+      <ul>
+        <li><a href="#dom-helpers">DOM</a></li>
+        <li><a href="#animation-helpers">Animate</a></li>
+        <li><a href="#known-issues">Known Issues</a></li>
+      </ul>
+    </nav>
     <h1 id="stroudjs">stroudjs</h1>
     <p>A slim library of helper functions for use in vanilla JS projects (ES6+).</p>
     <p>
