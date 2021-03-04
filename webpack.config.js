@@ -8,7 +8,7 @@ module.exports = {
     animate: './src/animate.ts',
     easings: './src/easings.ts'
   },
-  devtool: 'inline-source-map',
+  devtool: 'eval-source-map',
   plugins: [new CleanWebpackPlugin()],
   module: {
     rules: [
@@ -23,17 +23,20 @@ module.exports = {
     extensions: ['.ts', '.js']
   },
   devServer: {
-    contentBase: path.join(__dirname, '/'),
-    publicPath: '/',
+    static: path.join(__dirname, '/'),
+    dev: {
+      writeToDisk: true
+    },
     compress: true,
     port: 9000,
-    writeToDisk: true
+    host: 'localhost'
   },
   output: {
     publicPath: '/',
     filename: 'stroud.[name].js',
     path: path.resolve(__dirname, 'dist'),
     library: 'stroud',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
+    globalObject: "typeof self !== 'undefined' ? self : this"
   }
 }
