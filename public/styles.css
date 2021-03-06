@@ -69,3 +69,7 @@ section > h3 {
 #main-sidebar ul.sub-list {
   padding-left: 1rem;
 }
+img.logo {
+  display: block;
+  margin: 2rem auto;
+}
