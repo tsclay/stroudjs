@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>stroudjs</title>
-    <style></style>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css"
@@ -23,85 +24,35 @@
       href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-twilight.css"
       rel="stylesheet"
     />
-    <script src="/dist/stroud.main.js"></script>
-    <script>
-      const toggleMainSideNav = (e) => {
-        const navBar = e.currentTarget.parentNode
-        navBar.classList.toggle('active')
-        if (navBar.classList.contains('active')) {
-          e.currentTarget.innerText = 'X'
-        } else {
-          e.currentTarget.innerText = '>'
-        }
-      }
-    </script>
-    <style>
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI",
-          system-ui, "Ubuntu", "Droid Sans", sans-serif;
-        font-size: 14px;
-        line-height: 1.6;
-        background: #2d2d2d;
-        color: white;
-      }
-
-      a {
-        color: rgb(95, 214, 250);
-      }
-
-      section {
-        margin-top: 2rem;
-      }
-
-      section > h3:not(:first-of-type) {
-        width: 75%;
-        margin-top: 3rem;
-      }
-
-      section > h3 {
-        border-bottom: solid 1px rgba(255, 255, 255, 0.18);
-      }
-    </style>
-    <style>
-      .task-list-item {
-        list-style-type: none;
-      }
-      .task-list-item-checkbox {
-        margin-left: -20px;
-        vertical-align: middle;
-      }
-      #main-sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        transform: translate(-90%, 0);
-        height: 100%;
-        width: 365px;
-        background:rgb(172, 172, 172);
-        z-index: 2;
-        transition: 0.3s transform ease-in;
-      }
-      #main-sidebar.active {
-        transform: translate(0,0);
-      }
-      .toggle-nav-btn {
-        position: absolute;
-        right: 2px;
-        top: 2px;
-        width: 30px;
-        height: 30px;
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
     <script src="/dist/stroud.main.js"></script>
+    <script src="app.js"></script>
   </head>
   <body class="vscode-body vscode-dark">
     <nav id="main-sidebar">
       <button class="toggle-nav-btn" onclick="toggleMainSideNav(event)">></button>
-      <ul>
-        <li><a href="#dom-helpers">DOM</a></li>
-        <li><a href="#animation-helpers">Animate</a></li>
-        <li><a href="#known-issues">Known Issues</a></li>
+      <ul class="nav-list">
+        <li class="nav-item primary"><a class="nav-link" href="#dom-helpers">DOM</a></li>
+        <ul class="nav-list sub-list">
+          <li class="nav-item"><a class="nav-link" href="#searchforone-and-searchforall"><code>searchFor</code></a></li>
+          <li class="nav-item"><a class="nav-link" href="#createelement"><code>createElement</code></a></li>
+          <li class="nav-item"><a class="nav-link" href="#createsvg"><code>createSVG</code></a></li>
+          <li class="nav-item"><a class="nav-link" href="#nestelements"><code>nestElements</code></a></li>
+          <li class="nav-item"><a class="nav-link" href="#removenodes"><code>removeNodes</code></a></li>
+          <li class="nav-item"><a class="nav-link" href="#empty"><code>empty</code></a></li>
+        </ul>
+        <li class="nav-item primary"><a class="nav-link" href="#animation-helpers">Animate</a></li>
+        <ul class="nav-list sub-list">
+          <li class="nav-item"><a href="#transition" class="nav-link"><code>transition</code></a></li>
+          <li class="nav-item"><a href="#flip" class="nav-link"><code>flip</code></a></li>
+        </ul>
+        <li class="nav-item primary"><a class="nav-link" href="#demos">Demos</a></li>
+        <ul class="nav-list sub-list">
+          <li class="nav-item"><a href="/public/demos/dom/dom.html" class="nav-link">DOM</a></li>
+          <li class="nav-item"><a class="nav-link" href="/public/demos/animate/animate.html">Animate</a></li>
+        </ul>
+        <li class="nav-item primary"><a class="nav-link" href="#-known-issues-">Known Issues</a></li>
       </ul>
     </nav>
     <h1 id="stroudjs">stroudjs</h1>
@@ -110,7 +61,7 @@
       For those moments you want jQuery, but don't need all of it (this doesn't
       use jQuery-like things).
     </p>
-    <p>Interactive demo <a href="/public/demo/demo.html">here</a></p>
+    <p>Links to interactive demos can be found in the side menu.</p>
     <section>
       <h2 id="dom-helpers">DOM Helpers</h2>
       <h3 id="searchforone-and-searchforall">
@@ -120,8 +71,8 @@
         Writing <code>document.querySelector()</code> or
         <code>document.getElementById()</code> grows tedious.
       </p>
-      <pre><code class="language-javascript"><div><span >const</span> searchForOne = <span >(<span >string</span>) =&gt;</span> <span >document</span>.querySelector(string)
-<span >const</span> searchForAll = <span >(<span >string</span>) =&gt;</span> <span >document</span>.querySelectorAll(string)
+      <pre><code class="language-javascript"><div><span>const</span> searchForOne = <span>(<span>string</span>) =&gt;</span> <span>document</span>.querySelector(string)
+<span>const</span> searchForAll = <span>(<span>string</span>) =&gt;</span> <span>document</span>.querySelectorAll(string)
 </div></code></pre>
       <h3 id="createelement"><code>createElement()</code></h3>
       <ul>
@@ -135,19 +86,19 @@
         </li>
         <li><code>innerText</code> - The innerText to set on the element</li>
       </ul>
-      <pre><code class="language-javascript"><div><span >const</span> createElement = <span >(<span >tag, attributes = <span >null</span>, innerText = <span >null</span></span>) =&gt;</span> {
-<span >const</span> element = <span >document</span>.createElement(tag)
-<span >if</span> (attributes) {
-  <span >const</span> valuePairs = <span >Object</span>.entries(attributes)
-  valuePairs.forEach(<span >(<span >a</span>) =&gt;</span> {
-    <span >const</span> [key, value] = a
-    element.setAttribute(<span >`<span >${key}</span>`</span>, value)
-  })
-}
-<span >if</span> (<span >typeof</span> innerText === <span >'string'</span>) {
-  element.innerText = innerText
-}
-<span >return</span> element
+      <pre><code class="language-javascript"><div><span>const</span> createElement = <span>(<span>tag, attributes = <span>null</span>, innerText = <span>null</span></span>) =&gt;</span> {
+  <span>const</span> element = <span>document</span>.createElement(tag)
+  <span>if</span> (attributes) {
+    <span>const</span> valuePairs = <span>Object</span>.entries(attributes)
+    valuePairs.forEach(<span>(<span>a</span>) =&gt;</span> {
+      <span>const</span> [key, value] = a
+      element.setAttribute(<span>`<span>${key}</span>`</span>, value)
+    })
+  }
+  <span>if</span> (<span>typeof</span> innerText === <span>'string'</span>) {
+    element.innerText = innerText
+  }
+  <span>return</span> element
 }
 </div></code></pre>
       <p>
@@ -155,13 +106,13 @@
         <a href="https://docs.sencha.com/extjs/6.2.0/index.html">ExtJs</a> then
         this may look somewhat familiar:
       </p>
-      <pre><code class="language-javascript"><div> <span >const</span> childDiv = createElement(
-    <span >'div'</span>,
-    {
-      <span >class</span>: <span >'child'</span>
-    },
-    <span >'Click me to go out!'</span>
-  )
+      <pre><code class="language-javascript"><div><span>const</span> childDiv = createElement(
+  <span>'div'</span>,
+  {
+    <span>class</span>: <span>'child'</span>
+  },
+  <span>'Click me to go out!'</span>
+)
 </div></code></pre>
       <h3 id="createsvg"><code>createSVG()</code></h3>
       <p>
@@ -189,29 +140,29 @@
           percentage. If not provided, <code>viewBox</code> array is used
         </li>
       </ul>
-      <pre><code class="language-javascript"><div><span >const</span> createSVG = <span >(<span >tag, attributes, viewBox, dimensions</span>) =&gt;</span> {
-<span >const</span> xmlns = <span >'http://www.w3.org/2000/svg'</span>
-<span >const</span> svgElement = <span >document</span>.createElementNS(xmlns, tag)
-<span >if</span> (tag === <span >'svg'</span>) {
-  <span >const</span> [width, height] = viewBox
-  svgElement.setAttribute(<span >'viewBox'</span>, <span >`0 0 <span >${width}</span> <span >${height}</span>`</span>)
-  <span >if</span> (dimensions) {
-    <span >const</span> [diffWidth, diffHeight] = dimensions
-    svgElement.setAttribute(<span >'width'</span>, diffWidth)
-    svgElement.setAttribute(<span >'height'</span>, diffHeight)
-  } <span >else</span> {
-    svgElement.setAttribute(<span >'width'</span>, width)
-    svgElement.setAttribute(<span >'height'</span>, height)
+      <pre><code class="language-javascript"><div><span>const</span> createSVG = <span>(<span>tag, attributes, viewBox, dimensions</span>) =&gt;</span> {
+  <span>const</span> xmlns = <span>'http://www.w3.org/2000/svg'</span>
+  <span>const</span> svgElement = <span>document</span>.createElementNS(xmlns, tag)
+  <span>if</span> (tag === <span>'svg'</span>) {
+    <span>const</span> [width, height] = viewBox
+    svgElement.setAttribute(<span>'viewBox'</span>, <span>`0 0 <span>${width}</span> <span>${height}</span>`</span>)
+    <span>if</span> (dimensions) {
+      <span>const</span> [diffWidth, diffHeight] = dimensions
+      svgElement.setAttribute(<span>'width'</span>, diffWidth)
+      svgElement.setAttribute(<span>'height'</span>, diffHeight)
+    } <span>else</span> {
+      svgElement.setAttribute(<span>'width'</span>, width)
+      svgElement.setAttribute(<span>'height'</span>, height)
+    }
   }
-}
-<span >if</span> (attributes) {
-  <span >const</span> valuePairs = <span >Object</span>.entries(attributes)
-  valuePairs.forEach(<span >(<span >a</span>) =&gt;</span> {
-    <span >const</span> [key, value] = a
-    svgElement.setAttribute(<span >`<span >${key}</span>`</span>, value)
-  })
-}
-<span >return</span> svgElement
+  <span>if</span> (attributes) {
+    <span>const</span> valuePairs = <span>Object</span>.entries(attributes)
+    valuePairs.forEach(<span>(<span>a</span>) =&gt;</span> {
+      <span>const</span> [key, value] = a
+      svgElement.setAttribute(<span>`<span>${key}</span>`</span>, value)
+    })
+  }
+  <span>return</span> svgElement
 }
 </div></code></pre>
       <h3 id="nestelements"><code>nestElements()</code></h3>
@@ -226,11 +177,11 @@
           <code>parent</code>
         </li>
       </ul>
-      <pre><code class="language-javascript"><div><span >const</span> nestElements = <span >(<span >parent, children</span>) =&gt;</span> {
-children.forEach(<span >(<span >c</span>) =&gt;</span> {
-  parent.appendChild(c)
-})
-<span >return</span> parent
+      <pre><code class="language-javascript"><div><span>const</span> nestElements = <span>(<span>parent, children</span>) =&gt;</span> {
+  children.forEach(<span>(<span>c</span>) =&gt;</span> {
+    parent.appendChild(c)
+  })
+  <span>return</span> parent
 }
 </div></code></pre>
       <h3 id="removenodes"><code>removeNodes()</code></h3>
@@ -239,13 +190,13 @@ children.forEach(<span >(<span >c</span>) =&gt;</span> {
         <li><code>nodes</code> - Array of nodes to remove from the DOM.</li>
         <li><code>callback</code> - Optional callback to perform when done</li>
       </ul>
-      <pre><code class="language-javascript"><div><span >const</span> removeNodes = <span >(<span >nodes, callback</span>) =&gt;</span> {
-nodes.forEach(<span >(<span >n</span>) =&gt;</span> {
-  n.remove()
-})
-<span >if</span> (<span >typeof</span> callback === <span >'function'</span>) {
-  callback()
-}
+      <pre><code class="language-javascript"><div><span>const</span> removeNodes = <span>(<span>nodes, callback</span>) =&gt;</span> {
+  nodes.forEach(<span>(<span>n</span>) =&gt;</span> {
+    n.remove()
+  })
+  <span>if</span> (<span>typeof</span> callback === <span>'function'</span>) {
+    callback()
+  }
 }
 </div></code></pre>
       <h3 id="empty"><code>empty()</code></h3>
@@ -254,13 +205,13 @@ nodes.forEach(<span >(<span >n</span>) =&gt;</span> {
         is populated by <code>fetch()</code> results. A callback can be called
         at the end of this event if needed.
       </p>
-      <pre><code class="language-javascript"><div><span >const</span> empty = <span >(<span >parent, callback</span>) =&gt;</span> {
-<span >while</span> (parent.lastChild) {
-  parent.removeChild(parent.lastChild)
-}
-<span >if</span> (<span >typeof</span> callback === <span >'function'</span>) {
-  callback()
-}
+      <pre><code class="language-javascript"><div><span>const</span> empty = <span>(<span>parent, callback</span>) =&gt;</span> {
+  <span>while</span> (parent.lastChild) {
+    parent.removeChild(parent.lastChild)
+  }
+  <span>if</span> (<span>typeof</span> callback === <span>'function'</span>) {
+    callback()
+  }
 }
 </div></code></pre>
     </div>
@@ -297,11 +248,11 @@ nodes.forEach(<span >(<span >n</span>) =&gt;</span> {
       params look like this:
     </p>
     <pre><code class="language-javascript"><div>params = {
-<span >duration</span>: <span >300</span>,
-<span >delay</span>: <span >0</span>,
-<span >easing</span>: linear,
-<span >css</span>: <span >(<span >t, u</span>) =&gt;</span> <span >`transform: translate(-<span >${t * <span >50</span>}</span>px, <span >${t * <span >50</span>}</span>px)`</span>,
-<span >tick</span>: <span >(<span >t, u</span>) =&gt;</span> (t === <span >1</span> ? (node.style.animation = <span >''</span>) : <span >''</span>)
+  <span>duration</span>: <span>300</span>,
+  <span>delay</span>: <span>0</span>,
+  <span>easing</span>: linear,
+  <span>css</span>: <span>(<span>t, u</span>) =&gt;</span> <span>`transform: translate(-<span>${t * <span>50</span>}</span>px, <span>${t * <span>50</span>}</span>px)`</span>,
+  <span>tick</span>: <span>(<span>t, u</span>) =&gt;</span> (t === <span>1</span> ? (node.style.animation = <span>''</span>) : <span>''</span>)
 }
 </div></code></pre>
     <p>
@@ -366,8 +317,10 @@ nodes.forEach(<span >(<span >n</span>) =&gt;</span> {
     <p>
       <img src="/assets/flip.gif" alt="flip demo" title="Flip Demo" />
     </p>
- 
-    <h3 id="-known-issues-">🕷 Known Issues 🕷</h3>
+    </section>
+    <h2 id="demos">Demos</h2>
+    <p>Links to interactive demos can be found in the side menu.</p>
+    <h2 id="-known-issues-">🕷 Known Issues 🕷</h2>
     <ul>
       <li>
         <code>animation.js</code>: Inability to customize the

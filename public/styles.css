@@ -1,0 +1,71 @@
+:root {
+  --nav-width: 250px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI",
+    system-ui, "Ubuntu", "Droid Sans", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  background: #2d2d2d;
+  color: white;
+  overflow-x: hidden;
+}
+
+a {
+  color: rgb(95, 214, 250);
+}
+
+section {
+  margin-top: 2rem;
+}
+
+section > h3:not(:first-of-type) {
+  width: 75%;
+  margin-top: 3rem;
+}
+
+section > h3 {
+  border-bottom: solid 1px rgba(255, 255, 255, 0.18);
+}
+.task-list-item {
+  list-style-type: none;
+}
+.task-list-item-checkbox {
+  margin-left: -20px;
+  vertical-align: middle;
+}
+#main-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(calc(-1 * var(--nav-width) + 35px), 0);
+  height: 100%;
+  width: var(--nav-width);
+  background: rgb(172, 172, 172);
+  z-index: 2;
+  transition: 0.3s transform ease-in;
+}
+#main-sidebar.active {
+  transform: translate(0, 0);
+}
+#main-sidebar .toggle-nav-btn {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  width: 30px;
+  height: 30px;
+}
+#main-sidebar ul.nav-list {
+  list-style-type: none;
+}
+#main-sidebar li.nav-item.primary {
+  font-size: 20px;
+}
+#main-sidebar ul.nav-list a.nav-link {
+  text-decoration: none;
+  color: #2d2d2d;
+}
+#main-sidebar ul.sub-list {
+  padding-left: 1rem;
+}
