@@ -195,6 +195,10 @@ The flip function allows one to have a node transition out from one element and 
 
 ![flip demo](assets/flip.gif "Flip Demo")
 
+## Demos
+
+Links to come once the site is hosted!
+
 ### 🕷 Known Issues 🕷
 
 - `animation.js`: Inability to customize the `params` argument for neighboring nodes
