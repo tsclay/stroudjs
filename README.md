@@ -1,4 +1,4 @@
-![stroudjs](assets/stroudjs.png "stroudjs")
+![stroudjs](assets/stroudjs.png 'stroudjs')
 
 # stroudjs
 
@@ -10,7 +10,7 @@ For those moments you want jQuery, but don't need all of it (this doesn't use jQ
 
 ### `searchForOne()` and `searchForAll()`
 
-Writing ```document.querySelector()``` or ```document.getElementById()``` grows tedious.
+Writing `document.querySelector()` or `document.getElementById()` grows tedious.
 
 ```language-javascript
 const searchForOne = (string) => document.querySelector(string)
@@ -20,7 +20,7 @@ const searchForAll = (string) => document.querySelectorAll(string)
 ### `createElement()`
 
 - `element` - The element to create
-- `attributes` - Object containing attributes to set: ```element.setAttribute(key, value)```
+- `attributes` - Object containing attributes to set: `element.setAttribute(key, value)`
   - `{class: 'foo', "data-id": 'bar'}`
 - `innerText` - The innerText to set on the element
 
@@ -55,13 +55,13 @@ If you're familiar with [ExtJs](https://docs.sencha.com/extjs/6.2.0/index.html) 
 
 ### `createSVG()`
 
-A wrapper around ```document.createElementNS()``` with helpers for setting attributes.
+A wrapper around `document.createElementNS()` with helpers for setting attributes.
 
 - `tag` - The SVG element to create, such as 'svg', 'path', 'g', so on
-- `attributes` - (Optional) Object containing attributes to set: ```element.setAttribute(key, value)```
-attributes.attributeName - The element attribute you wish to set and its value
+- `attributes` - (Optional) Object containing attributes to set: `element.setAttribute(key, value)`
+  attributes.attributeName - The element attribute you wish to set and its value
 - `viewBox` - Array containing width and height as integers to set for the viewbox
-- `dimensions` - Set a width and height different from viewBox if needed. Can be numbers or strings representing a percentage. If not provided, ```viewBox``` array is used
+- `dimensions` - Set a width and height different from viewBox if needed. Can be numbers or strings representing a percentage. If not provided, `viewBox` array is used
 
 ```language-javascript
 const createSVG = (tag, attributes, viewBox, dimensions) => {
@@ -95,8 +95,8 @@ const createSVG = (tag, attributes, viewBox, dimensions) => {
 Append elements to a given parent element.
 
 - `parent` - The parent node to which children will be appended
-- `children` - Array of children elements that will go inside ```parent```
-  
+- `children` - Array of children elements that will go inside `parent`
+
 ```language-javascript
 const nestElements = (parent, children) => {
   children.forEach((c) => {
@@ -126,7 +126,7 @@ const removeNodes = (nodes, callback) => {
 
 ### `empty()`
 
-Remove children nodes from a parent node. Useful for nodes whose content is populated by ```fetch()``` results.
+Remove children nodes from a parent node. Useful for nodes whose content is populated by `fetch()` results.
 A callback can be called at the end of this event if needed.
 
 ```language-javascript
@@ -142,7 +142,7 @@ const empty = (parent, callback) => {
 
 ## Animation Helpers
 
-These were inspired by my experience with the Svelte framework. 
+These were inspired by my experience with the Svelte framework.
 
 Refer to [this talk](https://www.youtube.com/watch?v=FxMyqxc8Fx0) from Svelte Summit 2020 for how Svelte handles animation. The presenter Tan Li Hau demonstrates how one would write something like Svelte's transition function using vanilla language-javascript.
 
@@ -154,7 +154,7 @@ Give appended/prepended nodes a smooth entrance and give them a smooth exit.
 - `node` - The element that is entering or exiting the DOM
 - `params` - The parameters object for the CSS or JS animation
 
-`params` is based on Svelte's "transition contract. The default params look like this:
+`params` is based on Svelte's "transition contract". The default params look like this:
 
 ```language-javascript
 params = {
@@ -171,29 +171,29 @@ Refer to `easings.js` for the easing functions. These take the place of writing 
 The transition function creates keyframes for the transition animation, adds them to a style sheet, and runs the animation.
 Both CSS and JS animations are possible with this function.
 
-![transition demo](assets/transition.gif "Transition Demo")
+![transition demo](assets/transition.gif 'Transition Demo')
 
-If the transitioning node has siblings, those siblings are animated such that they smoothly fill in empty space left by the removed nodes and they smoothly make space for prepended nodes. 
+If the transitioning node has siblings, those siblings are animated such that they smoothly fill in empty space left by the removed nodes and they smoothly make space for prepended nodes.
 
-*The neighboring nodes will take on the parameters given to the outgoing element.* So, if an outgoing element's `params` argument includes `{duration: 1000, delay: 100, ...}` then the neighboring nodes will receive the same.
+_The neighboring nodes will take on the parameters given to the outgoing element._ So, if an outgoing element's `params` argument includes `{duration: 1000, delay: 100, ...}` then the neighboring nodes will receive the same.
 
-![Dynamic animation](assets/dynamic-shift.gif "Dynamic Adjusting")
+![Dynamic animation](assets/dynamic-shift.gif 'Dynamic Adjusting')
 
 ### ⚠️ Caveat ⚠️
 
 If your outgoing transition's duration is set to >= 1000, then too many simultaneously-exiting nodes will cause shifting nodes to not complete their animations.
 
-![Bug](assets/bug.gif "Bug with too many exiters")
+![Bug](assets/bug.gif 'Bug with too many exiters')
 
 ### `flip()`
 
 The flip function allows one to have a node transition out from one element and transition into another one.
 
 `target` - The parent node taking in the new element
-`flag` - Either 'append', which will call ```target.appendChild(node)``` or 'prepend' which calls ```target.prepend(node)``` node The node being moved to ```target```
+`flag` - Either 'append', which will call `target.appendChild(node)` or 'prepend' which calls `target.prepend(node)` node The node being moved to `target`
 `callback` - Execute code when flip has completed
 
-![flip demo](assets/flip.gif "Flip Demo")
+![flip demo](assets/flip.gif 'Flip Demo')
 
 ## Demos
 
