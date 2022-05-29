@@ -8,13 +8,13 @@ For those moments you want jQuery, but don't need all of it (this doesn't use jQ
 
 ## DOM Helpers
 
-### `searchForOne()` and `searchForAll()`
+### `s1()` and `sAll()`
 
 Writing `document.querySelector()` or `document.getElementById()` grows tedious.
 
 ```language-javascript
-const searchForOne = (string) => document.querySelector(string)
-const searchForAll = (string) => document.querySelectorAll(string)
+const s1 = (string) => document.querySelector(string)
+const sAll = (string) => document.querySelectorAll(string)
 ```
 
 ### `createElement()`

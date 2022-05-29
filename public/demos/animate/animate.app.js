@@ -1,6 +1,6 @@
 import {
-  searchForOne,
-  searchForAll,
+  s1,
+  sAll,
   createElement,
   createSVG,
   nestElements,
@@ -18,7 +18,7 @@ import {
 const { linear, circIn } = easings
 
 const resetChildren = () => {
-  removeNodes(searchForAll('.child'), () => {
+  removeNodes(sAll('.child'), () => {
     resetStroudStyles()
   })
 }
@@ -46,9 +46,9 @@ const handleExit = (e) => {
 }
 
 const handleBox1 = () => {
-  const prependBtn = searchForOne('#prepend-btn')
-  const appendBtn = searchForOne('#append-btn')
-  const resetBtn = searchForOne('#reset')
+  const prependBtn = s1('#prepend-btn')
+  const appendBtn = s1('#append-btn')
+  const resetBtn = s1('#reset')
 
   const prependChildGracefully = () => {
     const childDiv = createElement(
@@ -65,7 +65,7 @@ const handleBox1 = () => {
 
     childDiv.addEventListener('click', handleExit)
 
-    searchForOne('.box').prepend(childDiv)
+    s1('.box').prepend(childDiv)
     transition(
       'in',
       childDiv,
@@ -80,7 +80,7 @@ const handleBox1 = () => {
         },
         tick: (t, u) => {}
       },
-      searchForOne('.box')
+      s1('.box')
     )
   }
 
@@ -99,7 +99,7 @@ const handleBox1 = () => {
 
     childDiv.addEventListener('click', handleExit)
 
-    searchForOne('.box').appendChild(childDiv)
+    s1('.box').appendChild(childDiv)
     transition('in', childDiv, {
       duration: 300,
       delay: 0,
@@ -117,14 +117,14 @@ const handleBox1 = () => {
 }
 
 const handleBox2 = () => {
-  const box = searchForAll('.box')[1]
-  const flipAft = searchForOne('#flip-aft')
-  const flipPre = searchForOne('#flip-pre')
+  const box = sAll('.box')[1]
+  const flipAft = s1('#flip-aft')
+  const flipPre = s1('#flip-pre')
 
   const flipAppend = () => {
     const handleFlip = (e) => {
       const thisChild = e.currentTarget
-      flip(searchForAll('.box')[0], 'append', thisChild, () => {
+      flip(sAll('.box')[0], 'append', thisChild, () => {
         thisChild.removeEventListener('click', handleFlip)
         thisChild.addEventListener('click', handleExit)
       })
@@ -156,7 +156,7 @@ const handleBox2 = () => {
   const flipPrepend = () => {
     const handleFlip = (e) => {
       const thisChild = e.currentTarget
-      flip(searchForAll('.box')[0], 'prepend', thisChild, () => {
+      flip(sAll('.box')[0], 'prepend', thisChild, () => {
         thisChild.removeEventListener('click', handleFlip)
         thisChild.addEventListener('click', handleExit)
       })

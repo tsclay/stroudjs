@@ -34,9 +34,9 @@
       href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-twilight.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
-    <script src="/dist/stroud.main.js"></script>
+    <script type="module" src="/src/main.ts"></script>
     <script src="app.js"></script>
   </head>
   <body class="vscode-body vscode-dark">
@@ -59,8 +59,7 @@
         </ul>
         <li class="nav-item primary"><a class="nav-link" href="#demos">Demos</a></li>
         <ul class="nav-list sub-list">
-          <li class="nav-item"><a href="/public/demos/dom/dom.html" class="nav-link">DOM</a></li>
-          <li class="nav-item"><a class="nav-link" href="/public/demos/animate/animate.html">Animate</a></li>
+          <li class="nav-item"><a class="nav-link" href="/demos/animate/animate.html">Animate</a></li>
         </ul>
         <li class="nav-item primary"><a class="nav-link" href="#-known-issues-">Known Issues</a></li>
       </ul>
@@ -226,7 +225,7 @@
   }
 }
   </div></code></pre>
-      </div>
+      <!-- </div> -->
     </section>
       <section>
       <h2 id="animation-helpers">Animation Helpers</h2>

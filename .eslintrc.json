@@ -21,8 +21,8 @@
   },
   "globals": {
     "empty": "writable",
-    "searchForOne": "writable",
-    "searchForAll": "writable",
+    "s1": "writable",
+    "sAll": "writable",
     "createElement": "writable",
     "fragmentElements": "writable",
     "nestElements": "writable",
