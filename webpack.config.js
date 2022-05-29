@@ -23,8 +23,10 @@ module.exports = {
     extensions: ['.ts', '.js']
   },
   devServer: {
-    static: path.join(__dirname, '/'),
-    dev: {
+    static: {
+      directory: path.join(__dirname, '/')
+    },
+    devMiddleware: {
       writeToDisk: true
     },
     compress: true,
