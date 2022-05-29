@@ -1,4 +1,4 @@
-import {searchForOne, searchForAll, createElement, createSVG, nestElements, fragmentElements, removeNodes, empty } from'./dom'
+import {s1, sAll, createElement, createSVG, nestElements, addNodeBeforeSibling, fragmentElements, removeNodes, empty } from'./dom'
 import { STROUD_REGISTERED_RULES,
   STROUD_ANIMATION_COUNTER,
   STROUD_STYLES,
@@ -8,4 +8,4 @@ import * as easings from './easings'
 export { STROUD_REGISTERED_RULES,
   STROUD_ANIMATION_COUNTER,
   STROUD_STYLES,
-  resetStroudStyles, transition, pushSiblings, unshiftSiblings, flip, searchForOne, searchForAll, createElement, createSVG, nestElements, fragmentElements, removeNodes, empty, easings }
+  resetStroudStyles, transition, pushSiblings, unshiftSiblings, flip, s1, sAll, createElement, createSVG, nestElements, addNodeBeforeSibling, fragmentElements, removeNodes, empty, easings }

@@ -1,4 +1,4 @@
-const {
+import {
   searchForOne,
   searchForAll,
   createElement,
@@ -13,7 +13,7 @@ const {
   STROUD_REGISTERED_RULES,
   STROUD_ANIMATION_COUNTER,
   resetStroudStyles
-} = stroud
+} from '../../../src/main'
 
 const { linear, circIn } = easings
 

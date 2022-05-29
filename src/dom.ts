@@ -10,7 +10,7 @@ import {NodeAttributes} from './interfaces/dom.interfaces'
  * @param {String} query - The element to find, using CSS selector
  * @returns {HTMLElement|null} The NodeList (array-like object) containing the elements that match the given query or null if not found
  */
-export const searchForOne = (query: string): HTMLElement | null => document.querySelector(query)
+export const s1 = (query: string): HTMLElement | null => document.querySelector(query)
 
 /**
  * A wrapper around ```document.querySelectorAll()```
@@ -18,7 +18,7 @@ export const searchForOne = (query: string): HTMLElement | null => document.quer
  * @param {String} query - The element to find, using CSS selector
  * @returns {NodeList|null} The HTMLElementCollection returned from ```document.querySelectorAll()``` or null if not found
  */
-export const searchForAll = (query: string): NodeListOf<Element> | null => document.querySelectorAll(query)
+export const sAll = (query: string): NodeListOf<Element> | null => document.querySelectorAll(query)
 
 //= ==========================================================
 // Element Composition
@@ -83,7 +83,7 @@ export const createSVG = (tagName:string, viewBox: [number, number], attributes?
 }
 
 //= ==========================================================
-// Grouping
+// Grouping/Insertion
 //= ==========================================================
 
 /**
@@ -102,16 +102,33 @@ export const fragmentElements = (siblings: HTMLElement[]): DocumentFragment => {
 }
 
 /**
- * Append children elements from a list of child elements to a given parent element.
+ * Append/prepend child elements or text from a list to a given parent element.
  *
  * @param {HTMLElement} parent - The parent node to which children will be appended
+ * @param {'prepend'|'append'} operation - Determine whether `prepend()` or `append()` will be called for each child item
  * @param {HTMLElement[]} children - List children elements that will go inside ```parent```. Appended in ascending order, so first in list will be ```parent.firstChild```
  * @returns {HTMLElement} Parent with children appended
  */
-export const nestElements = (parent: HTMLElement, children: HTMLElement[]): HTMLElement => {
+export const nestElements = (parent: HTMLElement, operation: 'prepend'|'append', children: (HTMLElement|string)[]): HTMLElement => {
   children.forEach((c) => {
-    parent.appendChild(c)
+    if(operation == 'prepend') parent.prepend(c)
+    if(operation == 'append') parent.append(c)
   })
+  return parent
+} 
+
+/**
+ * Add a node inside a parent node before a given reference node. This method requires that `referenceNode` is inside `parent` and that `referenceNode` isn't null.
+ * 
+ * @param {HTMLElement} parent - The parent node which contains the `referenceNode`
+ * @param {HTMLElement} newNode - Node to insert before `referenceNode`
+ * @param {HTMLElement} referenceNode - Child element of `parent` before which `newNode` is added
+ * @returns {HTMLElement} Parent node
+ */
+export const addNodeBeforeSibling = (parent: HTMLElement, newNode: HTMLElement, referenceNode: HTMLElement): HTMLElement|void => {
+  if(referenceNode == null) return
+  if(!parent.contains(referenceNode)) return
+  parent.insertBefore(newNode, referenceNode)
   return parent
 }
 
